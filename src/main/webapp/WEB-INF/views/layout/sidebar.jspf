@@ -1,0 +1,120 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<aside class="sidebar p-3 d-none d-md-block text-white">
+    <div class="sidebar-heading">Khởi tạo & Hệ thống (Sprint 1)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/home">
+                <i class="bi bi-grid-1x2"></i> Tổng quan
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/users">
+                <i class="bi bi-people"></i> Người dùng
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Khách hàng & Dịch vụ (Sprint 2)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/customers">
+                <i class="bi bi-person-vcard"></i> Khách hàng
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/vehicles">
+                <i class="bi bi-truck-front"></i> Xe khách hàng
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/services">
+                <i class="bi bi-card-checklist"></i> Dịch vụ & Giá
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Nhân sự & Khoang (Sprint 3)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/staff">
+                <i class="bi bi-person-gear"></i> Nhân sự & Thợ
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/bays">
+                <i class="bi bi-bounding-box"></i> Khoang / Cầu dịch vụ
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Đặt lịch & Tiếp nhận (Sprint 4)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/bookings">
+                <i class="bi bi-calendar2-plus"></i> Đặt lịch hẹn
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/booking-history">
+                <i class="bi bi-clock-history"></i> Lịch sử đặt lịch
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/checkin">
+                <i class="bi bi-box-arrow-in-down-right"></i> Tiếp nhận Check-in
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Điều phối & Xưởng (Sprint 5)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/dispatch">
+                <i class="bi bi-diagram-3"></i> Bảng điều phối
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/jobs">
+                <i class="bi bi-file-earmark-medical"></i> Thẻ công việc (Job)
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/inspections">
+                <i class="bi bi-camera"></i> Biên bản & Ảnh xe
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Phát sinh & Nghiệm thu (Sprint 6)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/additional-services">
+                <i class="bi bi-plus-circle"></i> Dịch vụ phát sinh
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/quality-checks">
+                <i class="bi bi-patch-check"></i> Nghiệm thu QC
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-heading">Tài chính & Báo cáo (Sprint 7)</div>
+    <ul class="nav flex-column mb-2">
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/invoices">
+                <i class="bi bi-receipt"></i> Hóa đơn thanh toán
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/reviews">
+                <i class="bi bi-star"></i> Đánh giá phản hồi
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="${pageContext.request.contextPath}/reports">
+                <i class="bi bi-graph-up"></i> Báo cáo thống kê
+            </a>
+        </li>
+    </ul>
+</aside>

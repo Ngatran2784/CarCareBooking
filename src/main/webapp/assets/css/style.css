@@ -1,0 +1,84 @@
+/* CarCareBooking - Stylesheet */
+:root {
+    --primary-color: #0d6efd;
+    --sidebar-bg: #1e293b;
+    --sidebar-color: #cbd5e1;
+    --sidebar-active: #3b82f6;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    min-height: 100vh;
+    background-color: #f8fafc;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    min-height: calc(100vh - 56px);
+}
+
+.sidebar .nav-link {
+    color: var(--sidebar-color);
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    margin-bottom: 2px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.sidebar .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar .nav-link.active {
+    color: #ffffff;
+    background-color: var(--sidebar-active);
+    font-weight: 600;
+}
+
+.sidebar-heading {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+    padding: 0.75rem 1rem 0.25rem;
+    font-weight: 700;
+}
+
+.content-wrapper {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+.card {
+    border: none;
+    box-shadow: var(--card-shadow);
+    border-radius: 10px;
+}
+
+.card-header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+.badge-sprint {
+    background-color: #e0e7ff;
+    color: #3730a3;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    border-radius: 9999px;
+}
+
+.table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+    color: #475569;
+}
