@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: VehicleInspectionServlet
- * Biên bản kiểm tra xe & Ảnh hiện trạng (Sprint 5)
+ * Biên bản kiểm tra xe & Ảnh hiện trạng 
  * Mapping: /inspections
  */
 @WebServlet(name = "VehicleInspectionServlet", urlPatterns = {"/inspections"})
@@ -24,7 +24,7 @@ public class VehicleInspectionServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "VehicleInspection");
         request.setAttribute("action", action);
 

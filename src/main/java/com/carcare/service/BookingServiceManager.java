@@ -5,7 +5,7 @@ import com.carcare.model.Booking;
 import java.util.List;
 
 /**
- * Quản lý nghiệp vụ Đặt lịch (Sprint 4)
+ * Quản lý nghiệp vụ Đặt lịch 
  */
 public class BookingServiceManager {
     private final BookingDAO bookingDAO;

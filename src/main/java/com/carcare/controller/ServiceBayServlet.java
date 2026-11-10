@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: ServiceBayServlet
- * Quản lý Khoang và Cầu dịch vụ (Sprint 3)
+ * Quản lý Khoang và Cầu dịch vụ 
  * Mapping: /bays
  */
 @WebServlet(name = "ServiceBayServlet", urlPatterns = {"/bays"})
@@ -24,7 +24,7 @@ public class ServiceBayServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "ServiceBay");
         request.setAttribute("action", action);
 

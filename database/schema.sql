@@ -2,8 +2,6 @@
 -- Hệ thống Quản lý Đặt lịch và Điều phối Dịch vụ Chăm sóc Xe (CarCareBooking)
 -- DDL Schema cơ sở dữ liệu MySQL 8.x
 -- =============================================================================
--- TODO: Schema phác thảo sơ bộ phục vụ khởi tạo khung dự án.
--- Cần rà soát và xác nhận lại toàn bộ thuộc tính, ràng buộc nghiệp vụ trước khi áp dụng production.
 
 CREATE DATABASE IF NOT EXISTS `carcare_db` 
   CHARACTER SET utf8mb4 
@@ -27,27 +25,66 @@ CREATE TABLE IF NOT EXISTS `users` (
     `full_name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(100) NOT NULL UNIQUE,
     `phone` VARCHAR(20) NOT NULL UNIQUE,
-    `role_id` INT NOT NULL,
+    `role_id` INT NULL,
     `status` ENUM('ACTIVE', 'INACTIVE', 'LOCKED') DEFAULT 'ACTIVE',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`)
+    CONSTRAINT `fk_users_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 3. Bảng Khách hàng (Customers)
+-- 3. Bảng Liên kết Tài khoản và Vai trò (User Roles: N - N)
+CREATE TABLE IF NOT EXISTS `user_roles` (
+    `user_id` INT NOT NULL,
+    `role_id` INT NOT NULL,
+    PRIMARY KEY (`user_id`, `role_id`),
+    CONSTRAINT `fk_ur_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_ur_role` FOREIGN KEY (`role_id`) REFERENCES `roles` (`role_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 4. Bảng Khách hàng (Customers: 1 - 1 với User, nullable, không trùng)
 CREATE TABLE IF NOT EXISTS `customers` (
     `customer_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NULL,
+    `user_id` INT NULL UNIQUE,
+    `customer_code` VARCHAR(20) NULL UNIQUE,
     `full_name` VARCHAR(100) NOT NULL,
     `phone` VARCHAR(20) NOT NULL UNIQUE,
     `email` VARCHAR(100) NULL,
     `address` VARCHAR(255) NULL,
     `membership_level` ENUM('STANDARD', 'SILVER', 'GOLD', 'PLATINUM') DEFAULT 'STANDARD',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT `fk_customers_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 4. Bảng Phương tiện (Vehicles)
+-- 5. Bảng Nhân viên (Employees: 1 - 1 với User, nullable, không trùng)
+CREATE TABLE IF NOT EXISTS `employees` (
+    `employee_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NULL UNIQUE,
+    `employee_code` VARCHAR(20) NOT NULL UNIQUE,
+    `full_name` VARCHAR(100) NOT NULL,
+    `phone` VARCHAR(20) NOT NULL UNIQUE,
+    `email` VARCHAR(100) NULL,
+    `position` VARCHAR(50) NOT NULL,
+    `status` ENUM('ACTIVE', 'INACTIVE', 'OFF_DUTY') DEFAULT 'ACTIVE',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_employees_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 6. Bảng Nhân sự kỹ thuật xưởng (Staff)
+CREATE TABLE IF NOT EXISTS `staff` (
+    `staff_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `employee_id` INT NULL,
+    `user_id` INT NOT NULL UNIQUE,
+    `position` VARCHAR(50) NOT NULL,
+    `experience_level` VARCHAR(50) NULL,
+    `status` ENUM('AVAILABLE', 'BUSY', 'OFF_DUTY') DEFAULT 'AVAILABLE',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT `fk_staff_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_staff_employee` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 7. Bảng Phương tiện (Vehicles)
 CREATE TABLE IF NOT EXISTS `vehicles` (
     `vehicle_id` INT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` INT NOT NULL,
@@ -61,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
     CONSTRAINT `fk_vehicles_customer` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 5. Bảng Dịch vụ chăm sóc xe (Services)
+-- 8. Bảng Dịch vụ chăm sóc xe (Services)
 CREATE TABLE IF NOT EXISTS `services` (
     `service_id` INT AUTO_INCREMENT PRIMARY KEY,
     `service_name` VARCHAR(100) NOT NULL,
@@ -72,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `services` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 6. Bảng Lịch sử giá dịch vụ (Service Price History)
+-- 9. Bảng Lịch sử giá dịch vụ (Service Price History)
 CREATE TABLE IF NOT EXISTS `service_price_history` (
     `history_id` INT AUTO_INCREMENT PRIMARY KEY,
     `service_id` INT NOT NULL,
@@ -83,18 +120,7 @@ CREATE TABLE IF NOT EXISTS `service_price_history` (
     CONSTRAINT `fk_price_service` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 7. Bảng Nhân viên (Staff)
-CREATE TABLE IF NOT EXISTS `staff` (
-    `staff_id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL UNIQUE,
-    `position` VARCHAR(50) NOT NULL,
-    `experience_level` VARCHAR(50) NULL,
-    `status` ENUM('AVAILABLE', 'BUSY', 'OFF_DUTY') DEFAULT 'AVAILABLE',
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_staff_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- 8. Kỹ năng kỹ thuật viên (Technician Skills)
+-- 10. Kỹ năng kỹ thuật viên (Technician Skills)
 CREATE TABLE IF NOT EXISTS `technician_skills` (
     `skill_id` INT AUTO_INCREMENT PRIMARY KEY,
     `staff_id` INT NOT NULL,
@@ -105,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `technician_skills` (
     UNIQUE KEY `uk_staff_service` (`staff_id`, `service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 9. Ca làm việc (Work Shifts)
+-- 11. Ca làm việc (Work Shifts)
 CREATE TABLE IF NOT EXISTS `work_shifts` (
     `shift_id` INT AUTO_INCREMENT PRIMARY KEY,
     `staff_id` INT NOT NULL,
@@ -116,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `work_shifts` (
     CONSTRAINT `fk_shift_staff` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 10. Khoang/Cầu dịch vụ (Service Bays)
+-- 12. Khoang/Cầu dịch vụ (Service Bays)
 CREATE TABLE IF NOT EXISTS `service_bays` (
     `bay_id` INT AUTO_INCREMENT PRIMARY KEY,
     `bay_name` VARCHAR(50) NOT NULL UNIQUE,
@@ -125,7 +151,7 @@ CREATE TABLE IF NOT EXISTS `service_bays` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 11. Đặt lịch (Bookings)
+-- 13. Đặt lịch (Bookings)
 CREATE TABLE IF NOT EXISTS `bookings` (
     `booking_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_code` VARCHAR(20) NOT NULL UNIQUE,
@@ -140,7 +166,7 @@ CREATE TABLE IF NOT EXISTS `bookings` (
     CONSTRAINT `fk_bookings_vehicle` FOREIGN KEY (`vehicle_id`) REFERENCES `vehicles` (`vehicle_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 12. Chi tiết dịch vụ đặt (Booking Services)
+-- 14. Chi tiết dịch vụ đặt (Booking Services)
 CREATE TABLE IF NOT EXISTS `booking_services` (
     `booking_service_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL,
@@ -151,7 +177,7 @@ CREATE TABLE IF NOT EXISTS `booking_services` (
     CONSTRAINT `fk_bs_service` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 13. Lịch sử trạng thái đặt lịch (Booking History)
+-- 15. Lịch sử trạng thái đặt lịch (Booking History)
 CREATE TABLE IF NOT EXISTS `booking_history` (
     `history_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL,
@@ -163,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `booking_history` (
     CONSTRAINT `fk_bh_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 14. Phân công điều phối (Assignments)
+-- 16. Phân công điều phối (Assignments)
 CREATE TABLE IF NOT EXISTS `assignments` (
     `assignment_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL,
@@ -178,7 +204,7 @@ CREATE TABLE IF NOT EXISTS `assignments` (
     CONSTRAINT `fk_as_tech` FOREIGN KEY (`technician_id`) REFERENCES `staff` (`staff_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 15. Thẻ công việc (Job Cards)
+-- 17. Thẻ công việc (Job Cards)
 CREATE TABLE IF NOT EXISTS `job_cards` (
     `job_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL UNIQUE,
@@ -191,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `job_cards` (
     CONSTRAINT `fk_job_assignment` FOREIGN KEY (`assignment_id`) REFERENCES `assignments` (`assignment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 16. Biên bản kiểm tra xe vào xưởng (Vehicle Inspection)
+-- 18. Biên bản kiểm tra xe vào xưởng (Vehicle Inspection)
 CREATE TABLE IF NOT EXISTS `vehicle_inspections` (
     `inspection_id` INT AUTO_INCREMENT PRIMARY KEY,
     `job_id` INT NOT NULL,
@@ -205,7 +231,7 @@ CREATE TABLE IF NOT EXISTS `vehicle_inspections` (
     CONSTRAINT `fk_vi_inspector` FOREIGN KEY (`inspector_id`) REFERENCES `staff` (`staff_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 17. Hình ảnh kiểm tra xe (Inspection Photos)
+-- 19. Hình ảnh kiểm tra xe (Inspection Photos)
 CREATE TABLE IF NOT EXISTS `inspection_photos` (
     `photo_id` INT AUTO_INCREMENT PRIMARY KEY,
     `inspection_id` INT NOT NULL,
@@ -215,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `inspection_photos` (
     CONSTRAINT `fk_photo_insp` FOREIGN KEY (`inspection_id`) REFERENCES `vehicle_inspections` (`inspection_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 18. Yêu cầu dịch vụ phát sinh (Additional Service Requests)
+-- 20. Yêu cầu dịch vụ phát sinh (Additional Service Requests)
 CREATE TABLE IF NOT EXISTS `additional_service_requests` (
     `request_id` INT AUTO_INCREMENT PRIMARY KEY,
     `job_id` INT NOT NULL,
@@ -229,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `additional_service_requests` (
     CONSTRAINT `fk_asr_service` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 19. Kiểm định chất lượng nghiệm thu (Quality Checks)
+-- 21. Kiểm định chất lượng nghiệm thu (Quality Checks)
 CREATE TABLE IF NOT EXISTS `quality_checks` (
     `qc_id` INT AUTO_INCREMENT PRIMARY KEY,
     `job_id` INT NOT NULL,
@@ -242,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `quality_checks` (
     CONSTRAINT `fk_qc_checker` FOREIGN KEY (`checker_id`) REFERENCES `staff` (`staff_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 20. Hóa đơn thanh toán (Invoices)
+-- 22. Hóa đơn thanh toán (Invoices)
 CREATE TABLE IF NOT EXISTS `invoices` (
     `invoice_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL UNIQUE,
@@ -255,7 +281,7 @@ CREATE TABLE IF NOT EXISTS `invoices` (
     CONSTRAINT `fk_inv_booking` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`booking_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 21. Giao dịch thanh toán (Payments)
+-- 23. Giao dịch thanh toán (Payments)
 CREATE TABLE IF NOT EXISTS `payments` (
     `payment_id` INT AUTO_INCREMENT PRIMARY KEY,
     `invoice_id` INT NOT NULL,
@@ -266,7 +292,7 @@ CREATE TABLE IF NOT EXISTS `payments` (
     CONSTRAINT `fk_pay_invoice` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`invoice_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 22. Đánh giá của khách hàng (Reviews)
+-- 24. Đánh giá của khách hàng (Reviews)
 CREATE TABLE IF NOT EXISTS `reviews` (
     `review_id` INT AUTO_INCREMENT PRIMARY KEY,
     `booking_id` INT NOT NULL UNIQUE,
@@ -278,7 +304,7 @@ CREATE TABLE IF NOT EXISTS `reviews` (
     CONSTRAINT `fk_rev_customer` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 23. Thông báo hệ thống (Notifications)
+-- 25. Thông báo hệ thống (Notifications)
 CREATE TABLE IF NOT EXISTS `notifications` (
     `notification_id` INT AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT NOT NULL,

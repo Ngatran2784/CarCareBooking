@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: InvoiceServlet
- * Quản lý Hóa đơn dịch vụ (Sprint 7)
+ * Quản lý Hóa đơn dịch vụ 
  * Mapping: /invoices
  */
 @WebServlet(name = "InvoiceServlet", urlPatterns = {"/invoices"})
@@ -24,7 +24,7 @@ public class InvoiceServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Invoice");
         request.setAttribute("action", action);
 

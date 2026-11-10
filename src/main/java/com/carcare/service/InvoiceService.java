@@ -4,7 +4,7 @@ import com.carcare.dal.InvoiceDAO;
 import com.carcare.model.Invoice;
 
 /**
- * Quản lý tính toán hóa đơn và thanh toán (Sprint 7)
+ * Quản lý tính toán hóa đơn và thanh toán 
  */
 public class InvoiceService {
     private final InvoiceDAO invoiceDAO;

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: DispatchServlet
- * Điều phối kỹ thuật viên & Khoang làm việc (Sprint 5)
+ * Điều phối kỹ thuật viên & Khoang làm việc 
  * Mapping: /dispatch
  */
 @WebServlet(name = "DispatchServlet", urlPatterns = {"/dispatch"})
@@ -24,7 +24,7 @@ public class DispatchServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Dispatch");
         request.setAttribute("action", action);
 

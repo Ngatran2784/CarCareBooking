@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 /**
- * Tiện ích xử lý tải lên hình ảnh tiếp nhận xe (Sprint 5)
+ * Tiện ích xử lý tải lên hình ảnh tiếp nhận xe 
  */
 public class FileUploadUtil {
 

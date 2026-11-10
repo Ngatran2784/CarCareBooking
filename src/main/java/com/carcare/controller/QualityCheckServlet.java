@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: QualityCheckServlet
- * Kiểm định chất lượng nghiệm thu (Sprint 6)
+ * Kiểm định chất lượng nghiệm thu 
  * Mapping: /quality-checks
  */
 @WebServlet(name = "QualityCheckServlet", urlPatterns = {"/quality-checks"})
@@ -24,7 +24,7 @@ public class QualityCheckServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "QualityCheck");
         request.setAttribute("action", action);
 

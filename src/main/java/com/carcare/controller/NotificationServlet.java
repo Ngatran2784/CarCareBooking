@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: NotificationServlet
- * Thông báo hệ thống (Sprint 7)
+ * Thông báo hệ thống 
  * Mapping: /notifications
  */
 @WebServlet(name = "NotificationServlet", urlPatterns = {"/notifications"})
@@ -24,7 +24,7 @@ public class NotificationServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Notification");
         request.setAttribute("action", action);
 

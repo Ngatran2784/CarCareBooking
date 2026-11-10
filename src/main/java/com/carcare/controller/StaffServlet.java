@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: StaffServlet
- * Quản lý Nhân sự & Kỹ thuật viên (Sprint 3)
+ * Quản lý Nhân sự & Kỹ thuật viên 
  * Mapping: /staff
  */
 @WebServlet(name = "StaffServlet", urlPatterns = {"/staff"})
@@ -24,7 +24,7 @@ public class StaffServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Staff");
         request.setAttribute("action", action);
 

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: ServiceServlet
- * Quản lý Danh mục dịch vụ & Đơn giá (Sprint 2)
+ * Quản lý Danh mục dịch vụ & Đơn giá 
  * Mapping: /services
  */
 @WebServlet(name = "ServiceServlet", urlPatterns = {"/services"})
@@ -24,7 +24,7 @@ public class ServiceServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Service");
         request.setAttribute("action", action);
 

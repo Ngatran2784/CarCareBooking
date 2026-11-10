@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: PaymentServlet
- * Giao dịch thanh toán (Sprint 7)
+ * Giao dịch thanh toán 
  * Mapping: /payments
  */
 @WebServlet(name = "PaymentServlet", urlPatterns = {"/payments"})
@@ -24,7 +24,7 @@ public class PaymentServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Payment");
         request.setAttribute("action", action);
 

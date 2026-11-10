@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: ReportServlet
- * Báo cáo thống kê quản trị (Sprint 7)
+ * Báo cáo thống kê quản trị 
  * Mapping: /reports
  */
 @WebServlet(name = "ReportServlet", urlPatterns = {"/reports"})
@@ -24,7 +24,7 @@ public class ReportServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Report");
         request.setAttribute("action", action);
 

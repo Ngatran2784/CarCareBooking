@@ -2,6 +2,8 @@ package com.carcare.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -14,7 +16,8 @@ public class User implements Serializable {
     private String phone;
     private int roleId;
     private Role role;
-    private String status;
+    private List<Role> roles = new ArrayList<>();
+    private String status; // ACTIVE, INACTIVE, LOCKED
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -54,6 +57,9 @@ public class User implements Serializable {
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
 
+    public List<Role> getRoles() { return roles; }
+    public void setRoles(List<Role> roles) { this.roles = roles; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
@@ -63,8 +69,39 @@ public class User implements Serializable {
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
+    public boolean isActive() {
+        return "ACTIVE".equalsIgnoreCase(this.status);
+    }
+
+    public boolean isLocked() {
+        return "LOCKED".equalsIgnoreCase(this.status);
+    }
+
+    public boolean hasRole(String roleName) {
+        if (roleName == null) return false;
+        if (role != null && roleName.equalsIgnoreCase(role.getRoleName())) {
+            return true;
+        }
+        for (Role r : roles) {
+            if (r != null && roleName.equalsIgnoreCase(r.getRoleName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String getPrimaryRoleName() {
+        if (role != null && role.getRoleName() != null) {
+            return role.getRoleName();
+        }
+        if (!roles.isEmpty() && roles.get(0) != null) {
+            return roles.get(0).getRoleName();
+        }
+        return "CUSTOMER";
+    }
+
     @Override
     public String toString() {
-        return "User{" + "userId=" + userId + ", username='" + username + "', fullName='" + fullName + "'}";
+        return "User{" + "userId=" + userId + ", username='" + username + "', fullName='" + fullName + "', status='" + status + "'}";
     }
 }

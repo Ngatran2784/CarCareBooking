@@ -4,7 +4,7 @@ import com.carcare.dal.AdditionalServiceDAO;
 import com.carcare.model.AdditionalServiceRequest;
 
 /**
- * Quản lý dịch vụ phát sinh ngoài lịch hẹn (Sprint 6)
+ * Quản lý dịch vụ phát sinh ngoài lịch hẹn 
  */
 public class AdditionalServiceManager {
     private final AdditionalServiceDAO additionalServiceDAO;

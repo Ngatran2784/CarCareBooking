@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: JobServlet
- * Quản lý Thẻ công việc Job Card (Sprint 5)
+ * Quản lý Thẻ công việc Job Card 
  * Mapping: /jobs
  */
 @WebServlet(name = "JobServlet", urlPatterns = {"/jobs"})
@@ -24,7 +24,7 @@ public class JobServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Job");
         request.setAttribute("action", action);
 

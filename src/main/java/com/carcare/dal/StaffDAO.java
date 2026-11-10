@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class StaffDAO extends DBContext {
 
-    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện (Sprint tương ứng)
+    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện
     public Staff findById(int staffId) {
         return null;
     }

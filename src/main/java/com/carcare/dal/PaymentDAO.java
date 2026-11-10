@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class PaymentDAO extends DBContext {
 
-    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện (Sprint tương ứng)
+    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện
     public Payment findById(int paymentId) {
         return null;
     }

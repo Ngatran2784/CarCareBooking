@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: CheckInServlet
- * Tiếp nhận xe vào xưởng Check-in (Sprint 4/5)
+ * Tiếp nhận xe vào xưởng Check-in 
  * Mapping: /checkin
  */
 @WebServlet(name = "CheckInServlet", urlPatterns = {"/checkin"})
@@ -24,7 +24,7 @@ public class CheckInServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "CheckIn");
         request.setAttribute("action", action);
 

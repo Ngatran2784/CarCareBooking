@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: CustomerServlet
- * Quản lý Hồ sơ khách hàng (Sprint 2)
+ * Quản lý Hồ sơ khách hàng 
  * Mapping: /customers
  */
 @WebServlet(name = "CustomerServlet", urlPatterns = {"/customers"})
@@ -24,7 +24,7 @@ public class CustomerServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Customer");
         request.setAttribute("action", action);
 

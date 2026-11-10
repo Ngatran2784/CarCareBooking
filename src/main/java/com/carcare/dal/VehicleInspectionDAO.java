@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class VehicleInspectionDAO extends DBContext {
 
-    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện (Sprint tương ứng)
+    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện
     public VehicleInspection findById(int inspectionId) {
         return null;
     }

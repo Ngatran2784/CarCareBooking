@@ -9,7 +9,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h3 class="fw-bold mb-1">Thông tin người dùng</h3>
-                <span class="badge bg-primary">Sprint 1</span>
+                <span class="badge bg-secondary-subtle text-secondary border">Phân hệ đang hoàn thiện</span>
             </div>
             <div>
                 <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-secondary btn-sm">
@@ -22,7 +22,7 @@
             <i class="bi bi-info-circle-fill fs-4 me-3"></i>
             <div>
                 <strong>Thông báo trạng thái phát triển:</strong>
-                Chức năng <em>Thông tin người dùng</em> thuộc phạm vi của <strong>Sprint 1</strong>. Khung giao diện JSP và Servlet Controller đã được khởi tạo hoàn chỉnh và hợp lệ. Mã nguồn nghiệp vụ sẽ được lập trình trong sprint tương ứng theo tài liệu thiết kế.
+                Chức năng <em>Thông tin người dùng</em> đang được hoàn thiện. Dữ liệu thực tế sẽ được hiển thị khi kích hoạt phân hệ nghiệp vụ.
             </div>
         </div>
 
@@ -34,7 +34,7 @@
                 <p class="text-secondary mb-3">Biểu mẫu tạo mới hoặc chỉnh sửa tài khoản người dùng.</p>
                 <div class="border rounded p-3 bg-light text-center py-5">
                     <i class="bi bi-cone-striped text-warning display-4 mb-3"></i>
-                    <h5>Module đang trong quá trình phát triển (Sprint 1)</h5>
+                    <h5>Chức năng đang trong quá trình hoàn thiện</h5>
                     <p class="text-muted small">Dữ liệu sẽ được hiển thị khi kết nối CSDL và cài đặt phương thức DAO tương ứng.</p>
                 </div>
             </div>

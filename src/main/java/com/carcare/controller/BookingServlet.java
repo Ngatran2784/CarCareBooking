@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: BookingServlet
- * Quản lý Đặt lịch hẹn trực tuyến (Sprint 4)
+ * Quản lý Đặt lịch hẹn trực tuyến 
  * Mapping: /bookings
  */
 @WebServlet(name = "BookingServlet", urlPatterns = {"/bookings"})
@@ -24,7 +24,7 @@ public class BookingServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Booking");
         request.setAttribute("action", action);
 

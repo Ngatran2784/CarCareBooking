@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: ReviewServlet
- * Đánh giá & Phản hồi khách hàng (Sprint 7)
+ * Đánh giá & Phản hồi khách hàng 
  * Mapping: /reviews
  */
 @WebServlet(name = "ReviewServlet", urlPatterns = {"/reviews"})
@@ -24,7 +24,7 @@ public class ReviewServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "Review");
         request.setAttribute("action", action);
 

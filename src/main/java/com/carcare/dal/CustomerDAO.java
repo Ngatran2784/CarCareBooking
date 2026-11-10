@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class CustomerDAO extends DBContext {
 
-    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện (Sprint tương ứng)
+    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện
     public Customer findById(int customerId) {
         return null;
     }

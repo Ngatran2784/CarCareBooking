@@ -9,7 +9,7 @@ import java.io.IOException;
 
 /**
  * Controller: BookingHistoryServlet
- * Tra cứu Lịch sử đặt lịch (Sprint 4)
+ * Tra cứu Lịch sử đặt lịch 
  * Mapping: /booking-history
  */
 @WebServlet(name = "BookingHistoryServlet", urlPatterns = {"/booking-history"})
@@ -24,7 +24,7 @@ public class BookingHistoryServlet extends HttpServlet {
             action = "list";
         }
 
-        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo Sprint
+        // TODO: Triển khai xử lý nghiệp vụ chi tiết theo quy trình nghiệp vụ
         request.setAttribute("moduleName", "BookingHistory");
         request.setAttribute("action", action);
 

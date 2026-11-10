@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class BookingDAO extends DBContext {
 
-    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện (Sprint tương ứng)
+    // TODO: Triển khai truy vấn JDBC khi CSDL hoàn thiện
     public Booking findById(int bookingId) {
         return null;
     }
