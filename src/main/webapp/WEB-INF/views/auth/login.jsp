@@ -18,25 +18,32 @@
             </div>
         </div>
 
-        <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
-            <i class="bi bi-info-circle-fill fs-4 me-3"></i>
-            <div>
-                <strong>Thông báo trạng thái phát triển:</strong>
-                Chức năng <em>Đăng nhập hệ thống</em> thuộc phạm vi của <strong>Sprint 1</strong>. Khung giao diện JSP và Servlet Controller đã được khởi tạo hoàn chỉnh và hợp lệ. Mã nguồn nghiệp vụ sẽ được lập trình trong sprint tương ứng theo tài liệu thiết kế.
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger" role="alert">
+                <c:out value="${errorMessage}" />
             </div>
-        </div>
+        </c:if>
 
         <div class="card">
             <div class="card-header bg-white">
-                <i class="bi bi-gear me-2"></i>Mô tả & Yêu cầu chức năng
+                <i class="bi bi-person-lock me-2"></i>Thông tin đăng nhập
             </div>
             <div class="card-body">
-                <p class="text-secondary mb-3">Xác thực danh tính người dùng bằng username và mật khẩu.</p>
-                <div class="border rounded p-3 bg-light text-center py-5">
-                    <i class="bi bi-cone-striped text-warning display-4 mb-3"></i>
-                    <h5>Module đang trong quá trình phát triển (Sprint 1)</h5>
-                    <p class="text-muted small">Dữ liệu sẽ được hiển thị khi kết nối CSDL và cài đặt phương thức DAO tương ứng.</p>
-                </div>
+                <form method="post" action="${pageContext.request.contextPath}/auth">
+                    <div class="mb-3">
+                        <label for="usernameOrEmail" class="form-label">Tên đăng nhập hoặc email</label>
+                        <input type="text" class="form-control" id="usernameOrEmail" name="usernameOrEmail"
+                               value="<c:out value='${identifier}' />" autocomplete="username" required autofocus>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mật khẩu</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                               autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập
+                    </button>
+                </form>
             </div>
         </div>
     </div>
