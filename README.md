@@ -88,3 +88,10 @@ CarCareBooking/
   ```
 - Sao chép `src/main/resources/db.properties.example` thành `src/main/resources/db.properties` và điền mật khẩu kết nối.
 - *Lưu ý*: Trang chủ demo `/home` và giao diện khung sườn hoạt động độc lập ngay cả khi chưa kết nối Database.
+
+## Chạy nhanh bằng Tomcat 10.1
+
+1. Bật MySQL, nạp `database/schema.sql` rồi `database/seed.sql`.
+2. Chạy `scripts\run-tomcat.bat` (hoặc trong VS Code: Terminal → Run Build Task).
+   Script tự build WAR, deploy lên Tomcat (mặc định `%USERPROFILE%\tools\apache-tomcat-10.1.61`, đổi bằng biến `TOMCAT_HOME`) và khởi động.
+3. Mở http://localhost:8080/carcare/
