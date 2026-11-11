@@ -53,6 +53,48 @@ CarCareBooking/
 
 ---
 
+## 2b. Chạy nhanh trên Windows (khuyến nghị)
+
+**Chuẩn bị (làm một lần)**
+1. Cài **JDK 17** và **Apache Maven 3.9+** (kiểm tra bằng `java -version`, `mvn -v`).
+2. Tải **Apache Tomcat 10.1** (bản zip, https://tomcat.apache.org/download-10.cgi) và giải nén, ví dụ vào `C:\Users\<tên bạn>\tools\apache-tomcat-10.1.61`.
+3. Bật **MySQL 8** (ví dụ XAMPP) rồi nạp cơ sở dữ liệu:
+   ```bash
+   mysql -u root -p < database/schema.sql
+   mysql -u root -p < database/seed.sql
+   ```
+   Mặc định ứng dụng kết nối `localhost:3306`, user `root`, mật khẩu rỗng. Nếu khác, sao chép `src/main/resources/db.properties.example` thành `db.properties` và sửa, hoặc đặt biến môi trường `DB_URL`, `DB_USER`, `DB_PASSWORD`.
+
+**Chạy**
+1. Chạy `scripts\run-tomcat.bat` (nhấp đôi, hoặc gõ trong terminal). Script tự build WAR, deploy lên Tomcat và khởi động; giữ cửa sổ mở, nhấn `Ctrl+C` để dừng.
+   - Tomcat đặt ở thư mục khác `%USERPROFILE%\tools\apache-tomcat-10.1.61` thì đặt biến `TOMCAT_HOME` trước khi chạy: `set TOMCAT_HOME=D:\tomcat` rồi chạy script.
+2. Mở http://localhost:8080/carcare/ trong trình duyệt.
+
+**Tài khoản thử** (xem thêm đầu file `database/seed.sql`)
+
+| Vai trò | Tài khoản | Mật khẩu |
+|---|---|---|
+| Quản trị viên | `admin` | `Admin@123` |
+| Quản lý | `manager` | `Manager@123` |
+| Lễ tân | `receptionist` | `Recept@123` |
+| Kỹ thuật viên | `technician` | `Tech@123` |
+| Khách hàng | `customer` | `Cust@123` |
+
+**Đăng ký và quên mật khẩu (Sprint 1)**
+- Đăng ký khách hàng: `/auth?action=register`. Tài khoản mới được liên kết với hồ sơ trong bảng `customers`.
+- Quên mật khẩu: `/auth?action=forgot`. Token đặt lại dùng một lần, hết hạn sau 30 phút.
+- Dự án chưa cấu hình gửi email: liên kết đặt lại được ghi vào log của Tomcat và chỉ hiện trực tiếp trên trang khi truy cập từ `localhost`.
+
+**Chạy kiểm thử:** `mvn test` (cần MySQL đã nạp dữ liệu).
+
+**Lỗi thường gặp**
+- *Trang không mở / cổng 8080 bận*: tắt chương trình đang dùng cổng 8080 hoặc đổi cổng trong `conf\server.xml` của Tomcat.
+- *"Không tìm thấy Tomcat"*: kiểm tra `TOMCAT_HOME` trỏ đúng thư mục chứa `bin\catalina.bat`.
+- *Đăng nhập báo lỗi / trang trống*: kiểm tra MySQL đang chạy và đã nạp `schema.sql`, `seed.sql`.
+- *Trang quên mật khẩu hoặc đăng ký lỗi sau khi cập nhật code*: nạp lại `schema.sql` (có thêm bảng `password_reset_tokens`).
+
+---
+
 ## 3. Hướng dẫn chạy trên VS Code
 1. Cài đặt các extension Java được khuyến nghị trong `.vscode/extensions.json`:
    - `Extension Pack for Java`
@@ -80,18 +122,11 @@ CarCareBooking/
 
 ---
 
-## 5. Cấu hình Cơ sở dữ liệu (Tùy chọn)
+## 5. Cấu hình Cơ sở dữ liệu (bắt buộc để đăng nhập)
 - Tạo database trong MySQL:
   ```bash
   mysql -u root -p < database/schema.sql
   mysql -u root -p < database/seed.sql
   ```
 - Sao chép `src/main/resources/db.properties.example` thành `src/main/resources/db.properties` và điền mật khẩu kết nối.
-- *Lưu ý*: Trang chủ demo `/home` và giao diện khung sườn hoạt động độc lập ngay cả khi chưa kết nối Database.
-
-## Chạy nhanh bằng Tomcat 10.1
-
-1. Bật MySQL, nạp `database/schema.sql` rồi `database/seed.sql`.
-2. Chạy `scripts\run-tomcat.bat` (hoặc trong VS Code: Terminal → Run Build Task).
-   Script tự build WAR, deploy lên Tomcat (mặc định `%USERPROFILE%\tools\apache-tomcat-10.1.61`, đổi bằng biến `TOMCAT_HOME`) và khởi động.
-3. Mở http://localhost:8080/carcare/
+- *Lưu ý*: đăng nhập, đăng ký và quên mật khẩu đều cần MySQL đã nạp `schema.sql` và `seed.sql`.
