@@ -73,6 +73,19 @@
             </div>
         </c:if>
 
+        <c:if test="${param.registered == 'success'}">
+            <div class="alert alert-success d-flex align-items-center py-2 px-3 mb-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <div class="small">Đăng ký thành công. Vui lòng đăng nhập bằng tài khoản vừa tạo.</div>
+            </div>
+        </c:if>
+        <c:if test="${param.reset == 'success'}">
+            <div class="alert alert-success d-flex align-items-center py-2 px-3 mb-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <div class="small">Đặt lại mật khẩu thành công. Vui lòng đăng nhập bằng mật khẩu mới.</div>
+            </div>
+        </c:if>
+
         <form action="${pageContext.request.contextPath}/auth" method="post" autocomplete="off">
             <div class="mb-3">
                 <label for="username" class="form-label fw-semibold small text-secondary">Tên đăng nhập hoặc Email</label>
@@ -87,6 +100,7 @@
             <div class="mb-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <label for="password" class="form-label fw-semibold small text-secondary">Mật khẩu</label>
+                    <a href="${pageContext.request.contextPath}/auth?action=forgot" class="small text-decoration-none">Quên mật khẩu?</a>
                 </div>
                 <div class="input-group">
                     <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>

@@ -84,6 +84,19 @@ CREATE TABLE IF NOT EXISTS `staff` (
     CONSTRAINT `fk_staff_employee` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`employee_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- 6b. Bảng Token đặt lại mật khẩu (dùng một lần, có thời hạn)
+-- Chỉ lưu SHA-256 của token (không lưu token gốc). used_at != NULL nghĩa là đã dùng.
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+    `token_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `token_hash` CHAR(64) NOT NULL UNIQUE,
+    `expires_at` DATETIME NOT NULL,
+    `used_at` DATETIME NULL,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX `idx_prt_user` (`user_id`),
+    CONSTRAINT `fk_prt_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- 7. Bảng Phương tiện (Vehicles)
 CREATE TABLE IF NOT EXISTS `vehicles` (
     `vehicle_id` INT AUTO_INCREMENT PRIMARY KEY,

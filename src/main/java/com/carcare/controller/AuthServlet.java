@@ -1,7 +1,9 @@
 package com.carcare.controller;
 
+import com.carcare.dal.PasswordResetDAO;
 import com.carcare.dal.UserDAO;
 import com.carcare.model.User;
+import com.carcare.util.ValidationUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,12 +21,18 @@ import java.io.IOException;
 public class AuthServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
+    private static final String REGISTER_VIEW = "/WEB-INF/views/auth/register.jsp";
+    private static final String FORGOT_VIEW = "/WEB-INF/views/auth/forgot-password.jsp";
+    private static final String RESET_VIEW = "/WEB-INF/views/auth/reset-password.jsp";
+
     private UserDAO userDAO;
+    private PasswordResetDAO passwordResetDAO;
 
     @Override
     public void init() throws ServletException {
         super.init();
         this.userDAO = new UserDAO();
+        this.passwordResetDAO = new PasswordResetDAO();
     }
 
     @Override
@@ -49,7 +57,25 @@ public class AuthServlet extends HttpServlet {
 
         // 3. Xử lý mở giao diện Đăng ký (Register)
         if ("register".equalsIgnoreCase(action)) {
-            request.getRequestDispatcher("/WEB-INF/views/auth/register.jsp").forward(request, response);
+            request.getRequestDispatcher(REGISTER_VIEW).forward(request, response);
+            return;
+        }
+
+        // 3b. Quên mật khẩu: mở biểu mẫu yêu cầu đặt lại
+        if ("forgot".equalsIgnoreCase(action)) {
+            request.getRequestDispatcher(FORGOT_VIEW).forward(request, response);
+            return;
+        }
+
+        // 3c. Mở biểu mẫu đặt mật khẩu mới từ liên kết có token
+        if ("reset".equalsIgnoreCase(action)) {
+            String token = request.getParameter("token");
+            if (!passwordResetDAO.isTokenValid(token)) {
+                request.setAttribute("tokenInvalid", true);
+            } else {
+                request.setAttribute("token", token);
+            }
+            request.getRequestDispatcher(RESET_VIEW).forward(request, response);
             return;
         }
 
@@ -72,8 +98,147 @@ public class AuthServlet extends HttpServlet {
             return;
         }
 
+        if ("register".equalsIgnoreCase(action)) {
+            handleRegister(request, response);
+            return;
+        }
+        if ("forgot".equalsIgnoreCase(action)) {
+            handleForgotPassword(request, response);
+            return;
+        }
+        if ("reset".equalsIgnoreCase(action)) {
+            handleResetPassword(request, response);
+            return;
+        }
+
         // Xử lý xác thực thông tin đăng nhập
         handleLogin(request, response);
+    }
+
+    private static String trim(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    /**
+     * Đăng ký tài khoản khách hàng: kiểm tra dữ liệu, kiểm tra trùng, tạo users + customers.
+     */
+    private void handleRegister(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String fullName = trim(request.getParameter("fullName")).replaceAll("\\s+", " ");
+        String username = trim(request.getParameter("username"));
+        String phone = trim(request.getParameter("phone"));
+        String email = trim(request.getParameter("email"));
+        String password = request.getParameter("password");
+        String confirm = request.getParameter("confirmPassword");
+
+        java.util.Map<String, String> errors = new java.util.LinkedHashMap<>();
+        if (fullName.length() < 2 || fullName.length() > 100) {
+            errors.put("fullName", "Họ và tên phải từ 2 đến 100 ký tự.");
+        }
+        if (!ValidationUtil.isValidUsername(username)) {
+            errors.put("username", "Tên đăng nhập 4-30 ký tự, chỉ gồm chữ, số, dấu chấm hoặc gạch dưới.");
+        }
+        if (!ValidationUtil.isValidPhone(phone)) {
+            errors.put("phone", "Số điện thoại không hợp lệ (bắt đầu bằng 0, gồm 10-11 chữ số).");
+        }
+        if (!ValidationUtil.isValidEmail(email)) {
+            errors.put("email", "Địa chỉ email không hợp lệ.");
+        }
+        if (!ValidationUtil.isValidPassword(password)) {
+            errors.put("password", "Mật khẩu tối thiểu 8 ký tự, gồm ít nhất một chữ cái và một chữ số.");
+        } else if (!password.equals(confirm)) {
+            errors.put("confirmPassword", "Mật khẩu xác nhận không khớp.");
+        }
+
+        if (errors.isEmpty()) {
+            if (userDAO.exists("username", username)) errors.put("username", "Tên đăng nhập đã được sử dụng.");
+            if (userDAO.exists("email", email)) errors.put("email", "Email đã được đăng ký.");
+            if (userDAO.exists("phone", phone)) errors.put("phone", "Số điện thoại đã được đăng ký.");
+        }
+
+        if (errors.isEmpty()) {
+            int result = userDAO.registerCustomer(username, password, fullName, email, phone, null);
+            if (result > 0) {
+                response.sendRedirect(request.getContextPath() + "/auth?action=login&registered=success");
+                return;
+            }
+            if (result == UserDAO.REGISTER_DUPLICATE) {
+                errors.put("phone", "Thông tin đã tồn tại trong hệ thống. Vui lòng liên hệ cửa hàng nếu bạn từng sử dụng dịch vụ.");
+            } else {
+                request.setAttribute("errorMessage", "Không thể tạo tài khoản lúc này. Vui lòng thử lại sau.");
+            }
+        }
+
+        request.setAttribute("errors", errors);
+        request.setAttribute("fullName", fullName);
+        request.setAttribute("username", username);
+        request.setAttribute("phone", phone);
+        request.setAttribute("email", email);
+        request.getRequestDispatcher(REGISTER_VIEW).forward(request, response);
+    }
+
+    /**
+     * Yêu cầu đặt lại mật khẩu. Luôn trả về cùng một thông báo để không lộ email có tồn tại hay không.
+     * Hệ thống chưa cấu hình gửi email: liên kết được ghi vào log máy chủ, và chỉ hiển thị
+     * trực tiếp trên trang khi yêu cầu đến từ chính máy chủ (localhost - môi trường phát triển).
+     */
+    private void handleForgotPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String email = trim(request.getParameter("email"));
+        if (!ValidationUtil.isValidEmail(email)) {
+            request.setAttribute("errorMessage", "Vui lòng nhập địa chỉ email hợp lệ.");
+            request.setAttribute("email", email);
+            request.getRequestDispatcher(FORGOT_VIEW).forward(request, response);
+            return;
+        }
+
+        User user = userDAO.findActiveByEmail(email);
+        if (user != null) {
+            String token = passwordResetDAO.createToken(user.getUserId());
+            if (token != null) {
+                String link = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                        + request.getContextPath() + "/auth?action=reset&token=" + token;
+                System.out.println("[PasswordReset] Lien ket dat lai mat khau cho " + user.getUsername() + ": " + link);
+                String remote = request.getRemoteAddr();
+                boolean local = "127.0.0.1".equals(remote) || "0:0:0:0:0:0:0:1".equals(remote) || "::1".equals(remote);
+                if (local) {
+                    request.setAttribute("devResetLink", link);
+                }
+            }
+        }
+        request.setAttribute("sent", true);
+        request.setAttribute("ttlMinutes", PasswordResetDAO.TOKEN_TTL_MINUTES);
+        request.getRequestDispatcher(FORGOT_VIEW).forward(request, response);
+    }
+
+    /**
+     * Đặt mật khẩu mới bằng token dùng một lần.
+     */
+    private void handleResetPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String token = request.getParameter("token");
+        String password = request.getParameter("password");
+        String confirm = request.getParameter("confirmPassword");
+
+        if (!passwordResetDAO.isTokenValid(token)) {
+            request.setAttribute("tokenInvalid", true);
+            request.getRequestDispatcher(RESET_VIEW).forward(request, response);
+            return;
+        }
+        if (!ValidationUtil.isValidPassword(password)) {
+            request.setAttribute("errorMessage", "Mật khẩu tối thiểu 8 ký tự, gồm ít nhất một chữ cái và một chữ số.");
+        } else if (!password.equals(confirm)) {
+            request.setAttribute("errorMessage", "Mật khẩu xác nhận không khớp.");
+        } else if (passwordResetDAO.resetPassword(token, password)) {
+            response.sendRedirect(request.getContextPath() + "/auth?action=login&reset=success");
+            return;
+        } else {
+            request.setAttribute("tokenInvalid", true);
+            request.getRequestDispatcher(RESET_VIEW).forward(request, response);
+            return;
+        }
+        request.setAttribute("token", token);
+        request.getRequestDispatcher(RESET_VIEW).forward(request, response);
     }
 
     /**

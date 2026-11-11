@@ -47,6 +47,7 @@ ON DUPLICATE KEY UPDATE `role_id` = VALUES(`role_id`);
 
 -- 4. Hồ sơ Nhân viên (Employees)
 INSERT INTO `employees` (`employee_id`, `user_id`, `employee_code`, `full_name`, `phone`, `email`, `position`, `status`) VALUES
+(4, 1, 'EMP-ADM01', 'Quản Trị Viên Hệ Thống', '0901000001', 'admin@carcare.vn', 'Quản trị hệ thống', 'ACTIVE'),
 (1, 2, 'EMP-MGR01', 'Trần Văn Quản Lý', '0901000002', 'manager@carcare.vn', 'Quản lý cơ sở', 'ACTIVE'),
 (2, 3, 'EMP-REC01', 'Lê Thị Lễ Tân', '0901000003', 'receptionist@carcare.vn', 'Nhân viên lễ tân', 'ACTIVE'),
 (3, 4, 'EMP-TEC01', 'Nguyễn Văn Kỹ Thuật', '0901000004', 'technician@carcare.vn', 'Kỹ thuật viên Detailing', 'ACTIVE')
@@ -54,7 +55,8 @@ ON DUPLICATE KEY UPDATE `full_name` = VALUES(`full_name`), `position` = VALUES(`
 
 -- 5. Hồ sơ Khách hàng (Customers)
 INSERT INTO `customers` (`customer_id`, `user_id`, `customer_code`, `full_name`, `phone`, `email`, `address`, `membership_level`) VALUES
-(1, 5, 'CUST-0001', 'Phạm Minh Khách', '0901000005', 'customer@gmail.com', '123 Nguyễn Văn Cừ, Quận 5, TP.HCM', 'GOLD')
+(1, 5, 'CUST-0001', 'Phạm Minh Khách', '0901000005', 'customer@gmail.com', '123 Nguyễn Văn Cừ, Quận 5, TP.HCM', 'GOLD'),
+(2, 6, 'CUST-0002', 'Tài Khoản Bị Khóa', '0901000006', 'locked@gmail.com', NULL, 'STANDARD')
 ON DUPLICATE KEY UPDATE `full_name` = VALUES(`full_name`), `membership_level` = VALUES(`membership_level`);
 
 -- 6. Nhân sự kỹ thuật xưởng (Staff)
