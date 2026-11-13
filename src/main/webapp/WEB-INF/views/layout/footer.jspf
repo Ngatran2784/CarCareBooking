@@ -2,7 +2,7 @@
     </div><!-- Kết thúc container layout d-flex -->
     <footer class="bg-white border-top py-3 text-center text-muted small">
         <div class="container-fluid">
-            <span>CarCareBooking &copy; 2026 - Hệ thống Quản lý Đặt lịch và Điều phối Dịch vụ Chăm sóc Xe.</span>
+            <span>CarCareBooking &copy; <%= java.time.Year.now().getValue() %> - Hệ thống Quản lý Đặt lịch và Điều phối Dịch vụ Chăm sóc Xe.</span>
         </div>
     </footer>
     <!-- Bootstrap 5 Bundle JS -->

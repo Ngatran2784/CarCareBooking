@@ -1,5 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%-- Cờ vai trò dùng chung cho header, sidebar và các trang con --%>
+<c:set var="cu" value="${sessionScope.currentUser}" />
+<c:set var="isAdminOrManager" value="${cu != null && (cu.hasRole('ADMIN') || cu.hasRole('MANAGER'))}" />
+<c:set var="isFrontDesk" value="${cu != null && (cu.hasRole('ADMIN') || cu.hasRole('MANAGER') || cu.hasRole('RECEPTIONIST'))}" />
+<c:set var="isTechnician" value="${cu != null && cu.hasRole('TECHNICIAN')}" />
+<c:set var="isShopStaff" value="${isFrontDesk || isTechnician}" />
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -17,6 +23,12 @@
     <!-- Thanh điều hướng trên cùng (Top Navigation) -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm py-2">
         <div class="container-fluid px-3">
+            <c:if test="${cu != null}">
+                <button class="btn btn-outline-light btn-sm d-md-none me-2" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Mở menu chức năng">
+                    <i class="bi bi-list fs-5"></i>
+                </button>
+            </c:if>
             <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="${pageContext.request.contextPath}/home">
                 <i class="bi bi-car-front-fill text-primary fs-4"></i>
                 <span>CarCare<span class="text-primary">Booking</span></span>
@@ -38,10 +50,17 @@
                             <i class="bi bi-calendar-check me-1"></i> Đặt lịch hẹn
                         </a>
                     </li>
-                    <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER') || sessionScope.currentUser.hasRole('RECEPTIONIST'))}">
+                    <c:if test="${isFrontDesk}">
                         <li class="nav-item">
                             <a class="nav-link" href="${pageContext.request.contextPath}/dispatch">
                                 <i class="bi bi-diagram-3 me-1"></i> Điều phối xưởng
+                            </a>
+                        </li>
+                    </c:if>
+                    <c:if test="${isTechnician}">
+                        <li class="nav-item">
+                            <a class="nav-link" href="${pageContext.request.contextPath}/jobs">
+                                <i class="bi bi-file-earmark-medical me-1"></i> Thẻ công việc
                             </a>
                         </li>
                     </c:if>

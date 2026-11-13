@@ -1,137 +1,88 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<aside class="sidebar p-3 d-none d-md-block text-white">
-    <div class="sidebar-heading">Tổng quan & Hệ thống</div>
-    <ul class="nav flex-column mb-2">
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/home">
-                <i class="bi bi-speedometer2"></i> Bảng điều khiển
-            </a>
-        </li>
-        <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER'))}">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/users">
-                    <i class="bi bi-people"></i> Tài khoản người dùng
-                </a>
-            </li>
+<%-- Cờ vai trò (isAdminOrManager, isFrontDesk, isTechnician, isShopStaff) được khai báo trong header.jspf --%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+
+<%-- Từ màn hình md trở lên: cột menu cố định. Trên điện thoại: trượt ra như offcanvas --%>
+<aside class="sidebar offcanvas-md offcanvas-start text-white" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+    <div class="offcanvas-header border-bottom border-secondary d-md-none">
+        <h6 class="offcanvas-title" id="sidebarMenuLabel"><i class="bi bi-car-front-fill text-primary me-2"></i>Menu chức năng</h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Đóng"></button>
+    </div>
+
+    <div class="offcanvas-body d-block p-3">
+        <%-- Thẻ vai trò hiện tại --%>
+        <c:if test="${cu != null}">
+            <div class="sidebar-user mb-3">
+                <div class="small text-white-50">Đang đăng nhập với vai trò</div>
+                <div class="fw-semibold"><c:out value="${cu.primaryRoleName}" /></div>
+            </div>
         </c:if>
-    </ul>
 
-    <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER') || sessionScope.currentUser.hasRole('RECEPTIONIST'))}">
-        <div class="sidebar-heading">Khách hàng & Dịch vụ</div>
+        <div class="sidebar-heading">Tổng quan</div>
         <ul class="nav flex-column mb-2">
             <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/customers">
-                    <i class="bi bi-person-vcard"></i> Hồ sơ khách hàng
-                </a>
+                <a class="nav-link" href="${ctx}/home"><i class="bi bi-speedometer2"></i> Bảng điều khiển</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/vehicles">
-                    <i class="bi bi-truck-front"></i> Xe khách hàng
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/services">
-                    <i class="bi bi-card-checklist"></i> Bảng giá dịch vụ
-                </a>
-            </li>
-        </ul>
-    </c:if>
-
-    <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER'))}">
-        <div class="sidebar-heading">Vận hành & Khoang bãi</div>
-        <ul class="nav flex-column mb-2">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/staff">
-                    <i class="bi bi-person-gear"></i> Nhân sự & Kỹ thuật
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/bays">
-                    <i class="bi bi-bounding-box"></i> Khoang / Cầu dịch vụ
-                </a>
-            </li>
-        </ul>
-    </c:if>
-
-    <div class="sidebar-heading">Đặt lịch & Tiếp nhận</div>
-    <ul class="nav flex-column mb-2">
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/bookings">
-                <i class="bi bi-calendar2-plus"></i> Đặt lịch hẹn
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/booking-history">
-                <i class="bi bi-clock-history"></i> Lịch sử đặt lịch
-            </a>
-        </li>
-        <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER') || sessionScope.currentUser.hasRole('RECEPTIONIST'))}">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/checkin">
-                    <i class="bi bi-box-arrow-in-down-right"></i> Tiếp nhận xe (Check-in)
-                </a>
-            </li>
-        </c:if>
-    </ul>
-
-    <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER') || sessionScope.currentUser.hasRole('RECEPTIONIST') || sessionScope.currentUser.hasRole('TECHNICIAN'))}">
-        <div class="sidebar-heading">Điều phối & Thi công</div>
-        <ul class="nav flex-column mb-2">
-            <c:if test="${!sessionScope.currentUser.hasRole('TECHNICIAN')}">
+            <c:if test="${isAdminOrManager}">
                 <li class="nav-item">
-                    <a class="nav-link" href="${pageContext.request.contextPath}/dispatch">
-                        <i class="bi bi-diagram-3"></i> Bảng điều phối xưởng
-                    </a>
+                    <a class="nav-link" href="${ctx}/users"><i class="bi bi-people"></i> Tài khoản người dùng</a>
                 </li>
             </c:if>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/jobs">
-                    <i class="bi bi-file-earmark-medical"></i> Thẻ công việc (Job Card)
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/inspections">
-                    <i class="bi bi-camera"></i> Biên bản & Ảnh xe
-                </a>
-            </li>
         </ul>
 
-        <div class="sidebar-heading">Kiểm định & Phát sinh</div>
+        <c:if test="${isFrontDesk}">
+            <div class="sidebar-heading">Khách hàng & Dịch vụ</div>
+            <ul class="nav flex-column mb-2">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/customers"><i class="bi bi-person-vcard"></i> Hồ sơ khách hàng</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/vehicles"><i class="bi bi-truck-front"></i> Xe khách hàng</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/services"><i class="bi bi-card-checklist"></i> Bảng giá dịch vụ</a></li>
+            </ul>
+        </c:if>
+
+        <c:if test="${isAdminOrManager}">
+            <div class="sidebar-heading">Vận hành & Khoang bãi</div>
+            <ul class="nav flex-column mb-2">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/staff"><i class="bi bi-person-gear"></i> Nhân sự & Kỹ thuật</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/bays"><i class="bi bi-bounding-box"></i> Khoang / Cầu dịch vụ</a></li>
+            </ul>
+        </c:if>
+
+        <div class="sidebar-heading">Đặt lịch & Tiếp nhận</div>
         <ul class="nav flex-column mb-2">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/additional-services">
-                    <i class="bi bi-plus-circle"></i> Dịch vụ phát sinh
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/quality-checks">
-                    <i class="bi bi-patch-check"></i> Nghiệm thu chất lượng (QC)
-                </a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="${ctx}/bookings"><i class="bi bi-calendar2-plus"></i> Đặt lịch hẹn</a></li>
+            <li class="nav-item"><a class="nav-link" href="${ctx}/booking-history"><i class="bi bi-clock-history"></i> Lịch sử đặt lịch</a></li>
+            <c:if test="${isFrontDesk}">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/checkin"><i class="bi bi-box-arrow-in-down-right"></i> Tiếp nhận xe (Check-in)</a></li>
+            </c:if>
         </ul>
-    </c:if>
 
-    <div class="sidebar-heading">Tài chính & Đánh giá</div>
-    <ul class="nav flex-column mb-2">
-        <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER') || sessionScope.currentUser.hasRole('RECEPTIONIST'))}">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/invoices">
-                    <i class="bi bi-receipt"></i> Hóa đơn thanh toán
-                </a>
-            </li>
+        <c:if test="${isShopStaff}">
+            <div class="sidebar-heading">Điều phối & Thi công</div>
+            <ul class="nav flex-column mb-2">
+                <c:if test="${isFrontDesk}">
+                    <li class="nav-item"><a class="nav-link" href="${ctx}/dispatch"><i class="bi bi-diagram-3"></i> Bảng điều phối xưởng</a></li>
+                </c:if>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/jobs"><i class="bi bi-file-earmark-medical"></i> Thẻ công việc (Job Card)</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/inspections"><i class="bi bi-camera"></i> Biên bản & Ảnh xe</a></li>
+            </ul>
+
+            <div class="sidebar-heading">Kiểm định & Phát sinh</div>
+            <ul class="nav flex-column mb-2">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/additional-services"><i class="bi bi-plus-circle"></i> Dịch vụ phát sinh</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/quality-checks"><i class="bi bi-patch-check"></i> Nghiệm thu chất lượng (QC)</a></li>
+            </ul>
         </c:if>
-        <li class="nav-item">
-            <a class="nav-link" href="${pageContext.request.contextPath}/reviews">
-                <i class="bi bi-star"></i> Đánh giá phản hồi
-            </a>
-        </li>
-        <c:if test="${sessionScope.currentUser != null && (sessionScope.currentUser.hasRole('ADMIN') || sessionScope.currentUser.hasRole('MANAGER'))}">
-            <li class="nav-item">
-                <a class="nav-link" href="${pageContext.request.contextPath}/reports">
-                    <i class="bi bi-graph-up"></i> Báo cáo thống kê
-                </a>
-            </li>
-        </c:if>
-    </ul>
+
+        <div class="sidebar-heading">Tài chính & Đánh giá</div>
+        <ul class="nav flex-column mb-2">
+            <c:if test="${isFrontDesk}">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/invoices"><i class="bi bi-receipt"></i> Hóa đơn thanh toán</a></li>
+            </c:if>
+            <li class="nav-item"><a class="nav-link" href="${ctx}/reviews"><i class="bi bi-star"></i> Đánh giá phản hồi</a></li>
+            <c:if test="${isAdminOrManager}">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/reports"><i class="bi bi-graph-up"></i> Báo cáo thống kê</a></li>
+            </c:if>
+        </ul>
+    </div>
 </aside>
