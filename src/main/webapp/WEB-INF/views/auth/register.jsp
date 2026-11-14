@@ -49,41 +49,68 @@
     </div>
 
     <div class="p-4">
-        <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center" role="alert">
-            <i class="bi bi-info-circle-fill me-2 fs-5"></i>
-            <div>Cơ sở dữ liệu người dùng và phân quyền đã sẵn sàng. Chức năng tự đăng ký trực tuyến sẽ được mở trong bản phát hành tới. Quý khách có thể sử dụng tài khoản mẫu để trải nghiệm.</div>
-        </div>
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger d-flex align-items-center py-2 px-3 mb-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div class="small"><c:out value="${errorMessage}" /></div>
+            </div>
+        </c:if>
 
-        <form action="${pageContext.request.contextPath}/auth" method="post" autocomplete="off">
+        <form action="${pageContext.request.contextPath}/auth" method="post" autocomplete="off" novalidate>
+            <input type="hidden" name="action" value="register">
+
             <div class="mb-3">
                 <label for="fullName" class="form-label fw-semibold small text-secondary">Họ và tên</label>
-                <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Ví dụ: Nguyễn Văn A" disabled>
+                <input type="text" class="form-control ${not empty errors.fullName ? 'is-invalid' : ''}" id="fullName" name="fullName"
+                       placeholder="Ví dụ: Nguyễn Văn A" maxlength="100" value="<c:out value='${fullName}' />" required>
+                <div class="invalid-feedback"><c:out value="${errors.fullName}" /></div>
             </div>
 
             <div class="row g-2 mb-3">
                 <div class="col-md-6">
                     <label for="username" class="form-label fw-semibold small text-secondary">Tên đăng nhập</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="nguyenvana" disabled>
+                    <input type="text" class="form-control ${not empty errors.username ? 'is-invalid' : ''}" id="username" name="username"
+                           placeholder="nguyenvana" maxlength="30" value="<c:out value='${username}' />" required>
+                    <div class="invalid-feedback"><c:out value="${errors.username}" /></div>
                 </div>
                 <div class="col-md-6">
                     <label for="phone" class="form-label fw-semibold small text-secondary">Số điện thoại</label>
-                    <input type="text" class="form-control" id="phone" name="phone" placeholder="0901xxxxxx" disabled>
+                    <input type="text" class="form-control ${not empty errors.phone ? 'is-invalid' : ''}" id="phone" name="phone"
+                           placeholder="0901xxxxxx" maxlength="11" value="<c:out value='${phone}' />" required>
+                    <div class="invalid-feedback"><c:out value="${errors.phone}" /></div>
                 </div>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label fw-semibold small text-secondary">Địa chỉ Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" disabled>
+                <input type="email" class="form-control ${not empty errors.email ? 'is-invalid' : ''}" id="email" name="email"
+                       placeholder="email@example.com" maxlength="100" value="<c:out value='${email}' />" required>
+                <div class="invalid-feedback"><c:out value="${errors.email}" /></div>
             </div>
 
-            <div class="mb-3">
-                <label for="password" class="form-label fw-semibold small text-secondary">Mật khẩu</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Tối thiểu 6 ký tự" disabled>
+            <div class="row g-2 mb-3">
+                <div class="col-md-6">
+                    <label for="password" class="form-label fw-semibold small text-secondary">Mật khẩu</label>
+                    <input type="password" class="form-control ${not empty errors.password ? 'is-invalid' : ''}" id="password" name="password"
+                           placeholder="Tối thiểu 8 ký tự, có chữ và số" maxlength="72" required>
+                    <div class="invalid-feedback"><c:out value="${errors.password}" /></div>
+                </div>
+                <div class="col-md-6">
+                    <label for="confirmPassword" class="form-label fw-semibold small text-secondary">Xác nhận mật khẩu</label>
+                    <input type="password" class="form-control ${not empty errors.confirmPassword ? 'is-invalid' : ''}" id="confirmPassword"
+                           name="confirmPassword" placeholder="Nhập lại mật khẩu" maxlength="72" required>
+                    <div class="invalid-feedback"><c:out value="${errors.confirmPassword}" /></div>
+                </div>
             </div>
 
             <div class="d-grid mt-4">
-                <a href="${pageContext.request.contextPath}/auth?action=login" class="btn btn-primary py-2 fw-semibold">
-                    <i class="bi bi-arrow-left me-1"></i> Quay lại trang Đăng nhập
+                <button type="submit" class="btn btn-primary py-2 fw-semibold">
+                    <i class="bi bi-person-plus me-1"></i> Đăng ký
+                </button>
+            </div>
+            <div class="text-center mt-3">
+                <a href="${pageContext.request.contextPath}/auth?action=login" class="small text-decoration-none">
+                    <i class="bi bi-arrow-left me-1"></i>Đã có tài khoản? Đăng nhập
                 </a>
             </div>
         </form>

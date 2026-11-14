@@ -97,6 +97,60 @@ public class ReportDAO extends DBContext {
         return bays;
     }
 
+    /**
+     * Thống kê riêng cho KHÁCH HÀNG: chỉ đếm lịch hẹn của chính tài khoản đang đăng nhập.
+     */
+    public Map<String, Object> getCustomerStatistics(int userId) {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("myTotal", 0);
+        stats.put("myUpcoming", 0);
+        stats.put("myInProgress", 0);
+        stats.put("myCompleted", 0);
+        String base = "SELECT COUNT(*) FROM bookings b JOIN customers c ON c.customer_id = b.customer_id WHERE c.user_id = ? ";
+        try (Connection conn = getConnection()) {
+            if (conn == null) return stats;
+            stats.put("myTotal", countByUser(conn, base, userId));
+            stats.put("myUpcoming", countByUser(conn, base + "AND b.status IN ('PENDING','CONFIRMED') AND b.booking_time >= NOW()", userId));
+            stats.put("myInProgress", countByUser(conn, base + "AND b.status IN ('CHECKED_IN','IN_PROGRESS')", userId));
+            stats.put("myCompleted", countByUser(conn, base + "AND b.status = 'COMPLETED'", userId));
+        } catch (SQLException e) {
+            System.err.println("[ReportDAO] Loi thong ke khach hang: " + e.getMessage());
+        }
+        return stats;
+    }
+
+    /**
+     * Thống kê riêng cho KỸ THUẬT VIÊN: chỉ đếm công việc được giao cho chính họ.
+     */
+    public Map<String, Object> getTechnicianStatistics(int userId) {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("myAssigned", 0);
+        stats.put("myInProgress", 0);
+        stats.put("myCompletedToday", 0);
+        String base = "SELECT COUNT(*) FROM assignments a JOIN staff s ON s.staff_id = a.technician_id WHERE s.user_id = ? ";
+        try (Connection conn = getConnection()) {
+            if (conn == null) return stats;
+            stats.put("myAssigned", countByUser(conn, base + "AND a.status = 'ASSIGNED'", userId));
+            stats.put("myInProgress", countByUser(conn, base + "AND a.status = 'IN_PROGRESS'", userId));
+            stats.put("myCompletedToday", countByUser(conn, base + "AND a.status = 'COMPLETED' AND DATE(a.actual_end_time) = CURDATE()", userId));
+        } catch (SQLException e) {
+            System.err.println("[ReportDAO] Loi thong ke ky thuat vien: " + e.getMessage());
+        }
+        return stats;
+    }
+
+    private int countByUser(Connection conn, String sql, int userId) {
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            // Bang chua ton tai hoac rong
+        }
+        return 0;
+    }
+
     private int countQuery(Connection conn, String sql) {
         try (PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {

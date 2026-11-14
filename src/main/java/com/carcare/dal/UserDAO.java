@@ -246,6 +246,151 @@ public class UserDAO extends DBContext {
         return list;
     }
 
+    /** Kiểm tra giá trị đã tồn tại trong users ở cột cho trước (username, email, phone). */
+    public boolean exists(String column, String value) {
+        if (!("username".equals(column) || "email".equals(column) || "phone".equals(column))) {
+            throw new IllegalArgumentException("Cot khong hop le: " + column);
+        }
+        String sql = "SELECT 1 FROM users WHERE " + column + " = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setString(1, value);
+            rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.err.println("[UserDAO] Loi kiem tra ton tai " + column + ": " + e.getMessage());
+            return true; // an toàn: coi như đã tồn tại để không tạo trùng khi lỗi
+        } finally {
+            close(conn, stmt, rs);
+        }
+    }
+
+    /** Mã trả về của registerCustomer khi username/email/phone bị trùng. */
+    public static final int REGISTER_DUPLICATE = -1;
+    /** Mã trả về của registerCustomer khi gặp lỗi khác. */
+    public static final int REGISTER_ERROR = 0;
+
+    /**
+     * Đăng ký tài khoản khách hàng trong một giao dịch duy nhất:
+     * users (vai trò CUSTOMER) + user_roles + customers (liên kết 1-1 qua customers.user_id).
+     * Nếu số điện thoại đã có hồ sơ khách hàng do lễ tân tạo trước đó (chưa gắn tài khoản)
+     * và cùng email thì hồ sơ đó được liên kết với tài khoản mới thay vì tạo bản sao.
+     *
+     * @return user_id mới (&gt; 0), {@link #REGISTER_DUPLICATE} hoặc {@link #REGISTER_ERROR}
+     */
+    public int registerCustomer(String username, String rawPassword, String fullName,
+                                String email, String phone, String address) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            conn.setAutoCommit(false);
+
+            int roleId;
+            try (PreparedStatement ps = conn.prepareStatement("SELECT role_id FROM roles WHERE role_name = 'CUSTOMER'");
+                 ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    conn.rollback();
+                    return REGISTER_ERROR;
+                }
+                roleId = rs.getInt(1);
+            }
+
+            int userId;
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO users (username, password_hash, full_name, email, phone, role_id, status) "
+                  + "VALUES (?, ?, ?, ?, ?, ?, 'ACTIVE')", java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, username);
+                ps.setString(2, BCrypt.hashpw(rawPassword, BCrypt.gensalt(10)));
+                ps.setString(3, fullName);
+                ps.setString(4, email);
+                ps.setString(5, phone);
+                ps.setInt(6, roleId);
+                ps.executeUpdate();
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    if (!keys.next()) {
+                        conn.rollback();
+                        return REGISTER_ERROR;
+                    }
+                    userId = keys.getInt(1);
+                }
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)")) {
+                ps.setInt(1, userId);
+                ps.setInt(2, roleId);
+                ps.executeUpdate();
+            }
+
+            // Liên kết với hồ sơ khách hàng có sẵn (cùng SĐT và email, chưa gắn tài khoản) hoặc tạo mới
+            int linked;
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "UPDATE customers SET user_id = ?, full_name = ? "
+                  + "WHERE phone = ? AND user_id IS NULL AND LOWER(email) = LOWER(?)")) {
+                ps.setInt(1, userId);
+                ps.setString(2, fullName);
+                ps.setString(3, phone);
+                ps.setString(4, email);
+                linked = ps.executeUpdate();
+            }
+            if (linked == 0) {
+                int customerId;
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "INSERT INTO customers (user_id, full_name, phone, email, address) VALUES (?, ?, ?, ?, ?)",
+                        java.sql.Statement.RETURN_GENERATED_KEYS)) {
+                    ps.setInt(1, userId);
+                    ps.setString(2, fullName);
+                    ps.setString(3, phone);
+                    ps.setString(4, email);
+                    ps.setString(5, address);
+                    ps.executeUpdate();
+                    try (ResultSet keys = ps.getGeneratedKeys()) {
+                        keys.next();
+                        customerId = keys.getInt(1);
+                    }
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                        "UPDATE customers SET customer_code = ? WHERE customer_id = ?")) {
+                    ps.setString(1, String.format("CUST-%04d", customerId));
+                    ps.setInt(2, customerId);
+                    ps.executeUpdate();
+                }
+            }
+
+            conn.commit();
+            return userId;
+        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+            rollbackQuietly(conn);
+            return REGISTER_DUPLICATE;
+        } catch (SQLException e) {
+            rollbackQuietly(conn);
+            System.err.println("[UserDAO] Loi dang ky khach hang: " + e.getMessage());
+            return REGISTER_ERROR;
+        } finally {
+            close(conn, null, null);
+        }
+    }
+
+    private static void rollbackQuietly(Connection conn) {
+        if (conn != null) {
+            try { conn.rollback(); } catch (SQLException ignored) {}
+        }
+    }
+
+    /** Tìm tài khoản ACTIVE theo email (dùng cho quên mật khẩu). */
+    public User findActiveByEmail(String email) {
+        User user = findByUsernameOrEmail(email);
+        if (user != null && user.getEmail() != null
+                && user.getEmail().equalsIgnoreCase(email.trim()) && user.isActive() && !user.isLocked()) {
+            return user;
+        }
+        return null;
+    }
+
     /**
      * Ánh xạ từ dòng ResultSet sang đối tượng User.
      */
