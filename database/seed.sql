@@ -12,6 +12,9 @@
 
 USE `carcare_db`;
 
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 -- 1. Danh sách Vai trò (Roles)
 INSERT INTO `roles` (`role_id`, `role_name`, `description`) VALUES
 (1, 'ADMIN', 'Quản trị viên toàn hệ thống'),

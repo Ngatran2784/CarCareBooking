@@ -9,6 +9,9 @@ CREATE DATABASE IF NOT EXISTS `carcare_db`
 
 USE `carcare_db`;
 
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 -- 1. Bảng Vai trò người dùng (Roles)
 CREATE TABLE IF NOT EXISTS `roles` (
     `role_id` INT AUTO_INCREMENT PRIMARY KEY,

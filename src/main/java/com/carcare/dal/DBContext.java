@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 public class DBContext {
     private static String dbDriver = "com.mysql.cj.jdbc.Driver";
-    private static String dbUrl = "jdbc:mysql://localhost:3306/carcare_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&characterEncoding=UTF-8";
+    private static String dbUrl = "jdbc:mysql://localhost:3306/carcare_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Ho_Chi_Minh&useUnicode=true&characterEncoding=UTF-8";
     private static String dbUsername = "root";
     private static String dbPassword = "";
 
