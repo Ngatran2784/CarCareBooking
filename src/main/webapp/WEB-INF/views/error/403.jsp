@@ -12,8 +12,8 @@
             </div>
             <h2 class="fw-bold text-danger mb-2">403 - Quyền truy cập bị từ chối</h2>
             <p class="text-secondary mb-4">
-                Tài khoản <strong>${sessionScope.currentUser != null ? sessionScope.currentUser.fullName : "khách"}</strong> 
-                (Vai trò: <code>${sessionScope.currentUser != null ? sessionScope.currentUser.primaryRoleName : "Chưa đăng nhập"}</code>) 
+                Tài khoản <strong><c:out value="${sessionScope.currentUser != null ? sessionScope.currentUser.fullName : 'khách'}" /></strong> 
+                (Vai trò: <code><c:out value="${sessionScope.currentUser != null ? sessionScope.currentUser.primaryRoleName : 'Chưa đăng nhập'}" /></code>) 
                 không có đủ thẩm quyền để truy cập vào địa chỉ này.
             </p>
             <div class="d-flex justify-content-center gap-2">

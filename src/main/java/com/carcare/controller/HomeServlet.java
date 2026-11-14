@@ -1,15 +1,16 @@
 package com.carcare.controller;
 
+import java.io.IOException;
+
 import com.carcare.dal.DBContext;
 import com.carcare.dal.ReportDAO;
+import com.carcare.model.User;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Controller: HomeServlet
@@ -36,15 +37,38 @@ public class HomeServlet extends HttpServlet {
         boolean dbConnected = DBContext.isDatabaseConnected();
         request.setAttribute("dbConnected", dbConnected);
 
-        // Truy vấn số liệu thống kê vận hành thực tế
-        Map<String, Object> stats = reportDAO.getDashboardStatistics();
-        request.setAttribute("stats", stats);
+        // Xác định loại Dashboard theo vai trò (ưu tiên vai trò quyền cao nhất)
+        User user = (User) request.getSession().getAttribute("currentUser");
+        String dashboardRole = resolveDashboardRole(user);
+        request.setAttribute("dashboardRole", dashboardRole);
 
-        // Truy vấn trạng thái trực quan các khoang dịch vụ
-        List<Map<String, String>> bays = reportDAO.getServiceBaysOverview();
-        request.setAttribute("bays", bays);
+        // Chỉ truy vấn số liệu phù hợp với vai trò, khách hàng không được xem số liệu toàn xưởng
+        switch (dashboardRole) {
+            case "ADMIN":
+            case "MANAGER":
+            case "RECEPTIONIST":
+                request.setAttribute("stats", reportDAO.getDashboardStatistics());
+                request.setAttribute("bays", reportDAO.getServiceBaysOverview());
+                break;
+            case "TECHNICIAN":
+                request.setAttribute("stats", reportDAO.getTechnicianStatistics(user.getUserId()));
+                break;
+            default:
+                request.setAttribute("stats", reportDAO.getCustomerStatistics(user.getUserId()));
+                break;
+        }
 
         // Chuyển tiếp tới giao diện Dashboard
         request.getRequestDispatcher("/WEB-INF/views/dashboard/index.jsp").forward(request, response);
+    }
+
+    /** Chọn Dashboard hiển thị theo vai trò. */
+    private String resolveDashboardRole(User user) {
+        if (user == null) return "CUSTOMER";
+        if (user.hasRole("ADMIN")) return "ADMIN";
+        if (user.hasRole("MANAGER")) return "MANAGER";
+        if (user.hasRole("RECEPTIONIST")) return "RECEPTIONIST";
+        if (user.hasRole("TECHNICIAN")) return "TECHNICIAN";
+        return "CUSTOMER";
     }
 }

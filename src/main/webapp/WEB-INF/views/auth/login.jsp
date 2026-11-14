@@ -86,13 +86,13 @@
             </div>
         </c:if>
 
-        <form action="${pageContext.request.contextPath}/auth" method="post" autocomplete="off">
+        <form action="${pageContext.request.contextPath}/auth" method="post" id="loginForm">
             <div class="mb-3">
                 <label for="username" class="form-label fw-semibold small text-secondary">Tên đăng nhập hoặc Email</label>
                 <div class="input-group">
                     <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
                     <input type="text" class="form-control" id="username" name="username" 
-                           placeholder="Nhập tên đăng nhập hoặc email" 
+                           placeholder="Nhập tên đăng nhập hoặc email" autocomplete="username"
                            value="<c:out value='${username}' />" required autofocus>
                 </div>
             </div>
@@ -105,12 +105,15 @@
                 <div class="input-group">
                     <span class="input-group-text bg-light"><i class="bi bi-lock"></i></span>
                     <input type="password" class="form-control" id="password" name="password" 
-                           placeholder="Nhập mật khẩu" required>
+                           placeholder="Nhập mật khẩu" autocomplete="current-password" required>
+                    <button type="button" class="btn btn-outline-secondary" id="togglePassword" aria-label="Hiện hoặc ẩn mật khẩu">
+                        <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                    </button>
                 </div>
             </div>
 
             <div class="d-grid mt-4">
-                <button type="submit" class="btn btn-primary py-2 fw-semibold">
+                <button type="submit" class="btn btn-primary py-2 fw-semibold" id="loginButton">
                     <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                 </button>
             </div>
@@ -124,7 +127,7 @@
         <!-- Bảng thông tin tài khoản mẫu môi trường phát triển -->
         <div class="mt-4 pt-3 border-top">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="text-muted small fw-semibold"><i class="bi bi-key me-1"></i>Tài khoản kiểm thử:</span>
+                <span class="text-muted small fw-semibold"><i class="bi bi-key me-1"></i>Tài khoản kiểm thử (bấm để điền sẵn):</span>
             </div>
             <div class="d-flex flex-wrap gap-1">
                 <span class="badge bg-danger-subtle text-danger border demo-account-badge" onclick="fillAccount('admin', 'Admin@123')">Admin</span>
@@ -143,6 +146,22 @@ function fillAccount(username, password) {
     document.getElementById('username').value = username;
     document.getElementById('password').value = password;
 }
+
+// Hiện / ẩn mật khẩu
+document.getElementById('togglePassword').addEventListener('click', function () {
+    var input = document.getElementById('password');
+    var icon = document.getElementById('togglePasswordIcon');
+    var show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+});
+
+// Chống bấm đăng nhập nhiều lần
+document.getElementById('loginForm').addEventListener('submit', function () {
+    var btn = document.getElementById('loginButton');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang đăng nhập...';
+});
 </script>
 
 <!-- Bootstrap 5 Bundle JS -->

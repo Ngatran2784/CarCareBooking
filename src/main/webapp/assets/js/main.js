@@ -1,14 +1,14 @@
 // CarCareBooking - Global Script
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('CarCareBooking loaded successfully.');
-    
-    // Auto highlight active navigation link based on current path
-    const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('.sidebar .nav-link');
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href && currentPath.endsWith(href)) {
+document.addEventListener('DOMContentLoaded', function () {
+    // Tô sáng mục menu đang mở: khớp chính xác đường dẫn (bỏ qua query string)
+    var currentPath = window.location.pathname.replace(/\/+$/, '');
+    document.querySelectorAll('.sidebar .nav-link').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href) return;
+        var linkPath = href.split('?')[0].replace(/\/+$/, '');
+        if (currentPath === linkPath) {
             link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
         }
     });
 });
