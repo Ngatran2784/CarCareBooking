@@ -84,3 +84,19 @@ INSERT INTO `services` (`service_id`, `service_name`, `description`, `base_price
 (4, 'Khử mùi ozon & Diệt khuẩn nội thất', 'Khử mùi ẩm mốc, lọc sạch không khí điều hòa', 300000, 30, 'ACTIVE'),
 (5, 'Thay dầu nhớt & Bảo dưỡng định kỳ', 'Thay dầu nhớt tổng hợp cao cấp và kiểm tra 20 hạng mục an toàn', 950000, 60, 'ACTIVE')
 ON DUPLICATE KEY UPDATE `base_price` = VALUES(`base_price`);
+
+-- 9. Phương tiện mẫu (Vehicles)
+INSERT INTO `vehicles` (`vehicle_id`, `customer_id`, `license_plate`, `brand`, `model`, `year`, `color`, `vehicle_type`) VALUES
+(1, 1, '51G-123.45', 'Toyota', 'Camry 2.5Q', 2021, 'Đen', 'SEDAN'),
+(2, 1, '51H-678.90', 'Mazda', 'CX-5 Premium', 2022, 'Trắng', 'SUV'),
+(3, 1, '51K-999.88', 'Mercedes-Benz', 'C300 AMG', 2023, 'Đỏ', 'SEDAN')
+ON DUPLICATE KEY UPDATE `brand` = VALUES(`brand`), `model` = VALUES(`model`);
+
+-- 10. Cấu hình vận hành trung tâm mẫu (Operating Settings)
+INSERT INTO `operating_settings` (`setting_key`, `setting_value`, `description`) VALUES
+('OPENING_TIME', '07:30:00', 'Giờ mở cửa đón tiếp nhận xe hàng ngày'),
+('CLOSING_TIME', '18:30:00', 'Giờ đóng cửa trung tâm chăm sóc xe'),
+('BUFFER_MINUTES', '15', 'Thời gian đệm dọn vệ sinh khoang giữa 2 lượt dịch vụ (phút)'),
+('SLOT_INTERVAL_MINUTES', '30', 'Khoảng cách giữa các khung giờ đặt hẹn (phút)'),
+('MAX_ADVANCE_BOOKING_DAYS', '30', 'Số ngày tối đa cho phép khách đặt hẹn trước')
+ON DUPLICATE KEY UPDATE `setting_value` = VALUES(`setting_value`);

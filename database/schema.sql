@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
     `model` VARCHAR(50) NOT NULL,
     `year` INT NULL,
     `color` VARCHAR(30) NULL,
-    `vehicle_type` ENUM('SEDAN', 'SUV', 'HATCHBACK', 'TRUCK', 'VAN') NOT NULL DEFAULT 'SEDAN',
+    `vehicle_type` ENUM('SEDAN', 'SUV', 'CUV', 'MPV', 'HATCHBACK', 'PICKUP', 'OTHER', 'TRUCK', 'VAN') NOT NULL DEFAULT 'SEDAN',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_vehicles_customer` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`customer_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -329,4 +329,36 @@ CREATE TABLE IF NOT EXISTS `notifications` (
     `is_read` BOOLEAN DEFAULT FALSE,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_notif_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 26. Cấu hình vận hành trung tâm (Operating Settings)
+CREATE TABLE IF NOT EXISTS `operating_settings` (
+    `setting_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `setting_key` VARCHAR(50) NOT NULL UNIQUE,
+    `setting_value` VARCHAR(255) NOT NULL,
+    `description` VARCHAR(255) NULL,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 27. Lịch nghỉ lễ / Ngày ngừng nhận xe (Holiday Schedules)
+CREATE TABLE IF NOT EXISTS `holiday_schedules` (
+    `holiday_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `holiday_date` DATE NOT NULL UNIQUE,
+    `holiday_name` VARCHAR(100) NOT NULL,
+    `is_closed` BOOLEAN DEFAULT TRUE,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 28. Lịch bảo trì khoang dịch vụ (Bay Maintenance Schedules)
+CREATE TABLE IF NOT EXISTS `bay_maintenance_schedules` (
+    `maintenance_id` INT AUTO_INCREMENT PRIMARY KEY,
+    `bay_id` INT NOT NULL,
+    `start_time` DATETIME NOT NULL,
+    `end_time` DATETIME NOT NULL,
+    `reason` VARCHAR(255) NULL,
+    `status` ENUM('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED') DEFAULT 'SCHEDULED',
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX `idx_bms_bay` (`bay_id`),
+    CONSTRAINT `fk_bms_bay` FOREIGN KEY (`bay_id`) REFERENCES `service_bays` (`bay_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

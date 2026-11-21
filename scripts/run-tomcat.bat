@@ -7,7 +7,13 @@ REM  Truy cap: http://localhost:8080/carcare/   (Ctrl+C de dung)
 REM ============================================================
 setlocal
 set "ROOT=%~dp0.."
-if not defined TOMCAT_HOME set "TOMCAT_HOME=%USERPROFILE%\tools\apache-tomcat-10.1.61"
+if not defined TOMCAT_HOME (
+    if exist "C:\apache-tomcat-10.1.61\bin\catalina.bat" (
+        set "TOMCAT_HOME=C:\apache-tomcat-10.1.61"
+    ) else (
+        set "TOMCAT_HOME=%USERPROFILE%\tools\apache-tomcat-10.1.61"
+    )
+)
 if not defined MAVEN_HOME if exist "%USERPROFILE%\tools\apache-maven-3.9.9" set "MAVEN_HOME=%USERPROFILE%\tools\apache-maven-3.9.9"
 if defined MAVEN_HOME set "PATH=%MAVEN_HOME%\bin;%PATH%"
 if not defined JAVA_HOME (

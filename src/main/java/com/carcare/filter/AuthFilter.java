@@ -112,9 +112,13 @@ public class AuthFilter implements Filter {
             return user.hasRole("ADMIN") || user.hasRole("MANAGER");
         }
 
+        // Cụm quản lý khách hàng và phương tiện: CUSTOMER (truy cập hồ sơ/xe của mình) hoặc nhân viên điều hành (ADMIN, MANAGER, RECEPTIONIST)
+        if (path.startsWith("/customers") || path.startsWith("/vehicles")) {
+            return user.hasRole("ADMIN") || user.hasRole("MANAGER") || user.hasRole("RECEPTIONIST") || user.hasRole("CUSTOMER");
+        }
+
         // Cụm quản lý danh mục và điều phối xưởng: ADMIN, MANAGER, RECEPTIONIST
-        if (path.startsWith("/customers") || path.startsWith("/vehicles") || path.startsWith("/services")
-                || path.startsWith("/dispatch") || path.startsWith("/checkin")
+        if (path.startsWith("/services") || path.startsWith("/dispatch") || path.startsWith("/checkin")
                 || path.startsWith("/invoices") || path.startsWith("/payments")) {
             return user.hasRole("ADMIN") || user.hasRole("MANAGER") || user.hasRole("RECEPTIONIST");
         }

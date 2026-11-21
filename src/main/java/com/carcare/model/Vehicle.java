@@ -3,6 +3,11 @@ package com.carcare.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+/**
+ * Model Entity: Vehicle
+ * Đại diện cho phương tiện xe của khách hàng (Bảng `vehicles`).
+ * Liên kết N - 1 với `customers` qua `customerId`.
+ */
 public class Vehicle implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -13,10 +18,17 @@ public class Vehicle implements Serializable {
     private String model;
     private Integer year;
     private String color;
-    private String vehicleType; // SEDAN, SUV, HATCHBACK, etc.
+    private String vehicleType; // SEDAN, SUV, HATCHBACK, TRUCK, VAN
     private LocalDateTime createdAt;
 
-    public Vehicle() {}
+    // Trường phụ trợ hiển thị (Customer Info)
+    private String customerName;
+    private String customerPhone;
+    private String customerCode;
+
+    public Vehicle() {
+        this.vehicleType = "SEDAN";
+    }
 
     public Vehicle(int vehicleId, int customerId, String licensePlate, String brand, String model) {
         this.vehicleId = vehicleId;
@@ -24,6 +36,7 @@ public class Vehicle implements Serializable {
         this.licensePlate = licensePlate;
         this.brand = brand;
         this.model = model;
+        this.vehicleType = "SEDAN";
     }
 
     public int getVehicleId() { return vehicleId; }
@@ -53,8 +66,32 @@ public class Vehicle implements Serializable {
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+
+    public String getCustomerPhone() { return customerPhone; }
+    public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
+
+    public String getCustomerCode() { return customerCode; }
+    public void setCustomerCode(String customerCode) { this.customerCode = customerCode; }
+
+    /**
+     * Tên hiển thị đầy đủ phục vụ dropdown chọn xe (S2-07 Booking)
+     */
+    public String getDisplayName() {
+        return brand + " " + model + " (" + licensePlate + ")";
+    }
+
+    public String getTypeBadgeClass() {
+        if ("SUV".equalsIgnoreCase(vehicleType)) return "bg-primary";
+        if ("SEDAN".equalsIgnoreCase(vehicleType)) return "bg-info text-dark";
+        if ("HATCHBACK".equalsIgnoreCase(vehicleType)) return "bg-success";
+        if ("TRUCK".equalsIgnoreCase(vehicleType)) return "bg-warning text-dark";
+        return "bg-secondary";
+    }
+
     @Override
     public String toString() {
-        return "Vehicle{" + "vehicleId=" + vehicleId + ", licensePlate='" + licensePlate + "'}";
+        return "Vehicle{" + "vehicleId=" + vehicleId + ", customerId=" + customerId + ", licensePlate='" + licensePlate + "'}";
     }
 }

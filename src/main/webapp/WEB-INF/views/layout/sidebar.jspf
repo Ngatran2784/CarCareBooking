@@ -31,6 +31,14 @@
             </c:if>
         </ul>
 
+        <c:if test="${isCustomer}">
+            <div class="sidebar-heading">Khách hàng & Xe</div>
+            <ul class="nav flex-column mb-2">
+                <li class="nav-item"><a class="nav-link" href="${ctx}/customers?action=profile"><i class="bi bi-person-vcard"></i> Hồ sơ của tôi</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/vehicles"><i class="bi bi-truck-front"></i> Xe của tôi</a></li>
+            </ul>
+        </c:if>
+
         <c:if test="${isFrontDesk}">
             <div class="sidebar-heading">Khách hàng & Dịch vụ</div>
             <ul class="nav flex-column mb-2">
