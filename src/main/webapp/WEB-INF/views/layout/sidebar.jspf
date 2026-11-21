@@ -4,18 +4,20 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 
 <%-- Từ màn hình md trở lên: cột menu cố định. Trên điện thoại: trượt ra như offcanvas --%>
-<aside class="sidebar offcanvas-md offcanvas-start text-white" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-    <div class="offcanvas-header border-bottom border-secondary d-md-none">
-        <h6 class="offcanvas-title" id="sidebarMenuLabel"><i class="bi bi-car-front-fill text-primary me-2"></i>Menu chức năng</h6>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Đóng"></button>
+<aside class="sidebar offcanvas-md offcanvas-start" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+    <div class="offcanvas-header border-bottom d-md-none" style="border-color: #E2E8F0 !important;">
+        <h6 class="offcanvas-title fw-bold" id="sidebarMenuLabel" style="color: #0F172A;">
+            <i class="bi bi-car-front-fill text-primary me-2"></i>Menu chức năng
+        </h6>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu" aria-label="Đóng"></button>
     </div>
 
     <div class="offcanvas-body d-block p-3">
         <%-- Thẻ vai trò hiện tại --%>
         <c:if test="${cu != null}">
             <div class="sidebar-user mb-3">
-                <div class="small text-white-50">Đang đăng nhập với vai trò</div>
-                <div class="fw-semibold"><c:out value="${cu.primaryRoleName}" /></div>
+                <div class="sidebar-user-label">Đang đăng nhập với vai trò</div>
+                <div class="sidebar-user-role"><c:out value="${cu.primaryRoleName}" /></div>
             </div>
         </c:if>
 
