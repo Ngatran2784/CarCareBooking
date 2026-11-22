@@ -55,7 +55,7 @@
             <ul class="nav flex-column mb-2">
                 <li class="nav-item"><a class="nav-link" href="${ctx}/staff"><i class="bi bi-person-gear"></i> Ca & Kỹ năng kỹ thuật viên</a></li>
                 <li class="nav-item"><a class="nav-link" href="${ctx}/settings"><i class="bi bi-clock"></i> Giờ mở cửa & Ngày nghỉ</a></li>
-                <li class="nav-item"><a class="nav-link" href="${ctx}/bays"><i class="bi bi-bounding-box"></i> Khoang / Cầu dịch vụ</a></li>
+                <li class="nav-item"><a class="nav-link" href="${ctx}/bays"><i class="bi bi-bounding-box"></i> Khoang & Lịch bảo trì</a></li>
             </ul>
         </c:if>
 
