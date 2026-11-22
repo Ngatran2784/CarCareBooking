@@ -108,7 +108,7 @@ public class AuthFilter implements Filter {
      */
     private boolean hasPermission(User user, String path) {
         // Cụm quản trị và báo cáo hệ thống: Chỉ ADMIN và MANAGER
-        if (path.startsWith("/users") || path.startsWith("/reports") || path.startsWith("/staff") || path.startsWith("/bays")) {
+        if (path.startsWith("/users") || path.startsWith("/reports") || path.startsWith("/staff") || path.startsWith("/bays") || path.startsWith("/settings")) {
             return user.hasRole("ADMIN") || user.hasRole("MANAGER");
         }
 
