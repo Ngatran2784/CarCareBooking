@@ -12,6 +12,7 @@
                 <span class="badge bg-secondary-subtle text-secondary border">Phân hệ đang hoàn thiện</span>
             </div>
             <div>
+                <a class="btn btn-primary me-2" href="${pageContext.request.contextPath}/bookings?action=create">Chọn xe chăm sóc</a>
                 <a href="${pageContext.request.contextPath}/home" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-arrow-left"></i> Quay lại Dashboard
                 </a>

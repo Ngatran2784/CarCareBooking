@@ -2,9 +2,12 @@ document.querySelectorAll('.delete-form').forEach(form => form.addEventListener(
     if (!confirm('Bạn có chắc muốn xóa dữ liệu này?')) event.preventDefault();
 }));
 function fillOperationsForm(form, values) {
+    const panel = form.closest('details');
+    if (panel) panel.open = true;
     Object.entries(values).forEach(([key, value]) => {
         if (form.elements.namedItem(key)) form.elements.namedItem(key).value = value;
     });
+    form.querySelector('select, input:not([type=hidden])')?.focus({preventScroll:true});
     form.scrollIntoView({behavior: 'smooth', block: 'center'});
 }
 document.querySelectorAll('.edit-shift').forEach(button => button.addEventListener('click', () => {

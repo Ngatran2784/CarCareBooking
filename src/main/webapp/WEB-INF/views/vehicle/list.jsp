@@ -4,9 +4,9 @@
 <%@ include file="../layout/header.jspf" %>
 <%@ include file="../layout/sidebar.jspf" %>
 
-<main class="content-wrapper">
+<main class="content-wrapper workspace-page">
     <div class="container-fluid">
-        <!-- Tiêu đề trang và nút hành động -->
+        <div class="page-eyebrow">Garage của bạn</div>
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
             <div>
                 <h3 class="fw-bold mb-1">
@@ -30,8 +30,8 @@
                     </c:choose>
                 </p>
             </div>
-            <div class="d-flex gap-2">
-                <a href="${pageContext.request.contextPath}/vehicles?action=add${filterCustomerId > 0 ? ('&customerId=' + filterCustomerId) : ''}"
+            <div class="d-flex flex-wrap gap-2"><a href="${pageContext.request.contextPath}/bookings?action=create" class="btn btn-primary"><i class="bi bi-check2-circle me-1"></i>Chọn xe chăm sóc</a>
+                <a href="${pageContext.request.contextPath}/vehicles?action=add${filterCustomerId > 0 ? '&customerId=' : ''}${filterCustomerId > 0 ? filterCustomerId : ''}"
                    class="btn btn-primary btn-sm px-3">
                     <i class="bi bi-plus-circle-fill me-1"></i> Thêm xe mới
                 </a>

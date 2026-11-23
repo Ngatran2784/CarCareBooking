@@ -4,10 +4,9 @@
 <fmt:setLocale value="vi_VN"/>
 <c:set var="pageTitle" value="Khoang & Lịch bảo trì"/><%@ include file="../layout/header.jspf" %>
 <%@ include file="../layout/sidebar.jspf" %>
-<main class="content-wrapper"><div class="container-fluid">
+<main class="content-wrapper workspace-page"><div class="container-fluid">
 
-<div class="mb-4"><h3 class="fw-bold mb-1">Khoang & Lịch bảo trì</h3><p class="text-muted mb-0">Quản lý khoang thi công và chủ động lên lịch bảo dưỡng thiết bị.</p></div>
-<c:if test="${not empty error}"><div class="alert alert-danger" role="alert"><c:out value="${error}"/></div></c:if>
+<div class="page-eyebrow">Quản lý danh mục</div><div class="page-hero"><div><h3 class="fw-bold mb-1">Khoang & Lịch bảo trì</h3><p>Theo dõi không gian làm việc, chủ động bảo trì để mỗi lượt chăm sóc xe diễn ra suôn sẻ.</p></div></div><nav class="workspace-nav" aria-label="Danh mục và nhân sự"><a href="${ctx}/services" class=""><i class="bi bi-grid me-2"></i>Dịch vụ & Bảng giá</a><c:if test="${isAdminOrManager}"><a href="${ctx}/bays" class="active" aria-current="page"><i class="bi bi-shop me-2"></i>Khoang dịch vụ</a></c:if><c:if test="${isAdminOrManager}"><a href="${ctx}/staff" class=""><i class="bi bi-people me-2"></i>Nhân sự & Ca làm</a></c:if></nav><c:if test="${not empty error}"><div class="alert alert-danger" role="alert"><c:out value="${error}"/></div></c:if>
 <c:if test="${not empty success}"><div class="alert alert-success" role="status"><c:out value="${success}"/></div></c:if>
 <c:if test="${ready}">
 <%@ include file="form.jsp" %>
