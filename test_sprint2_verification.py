@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 import urllib.parse
 import http.cookiejar
 import re

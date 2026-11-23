@@ -1,6 +1,5 @@
 package com.carcare;
 
-import com.carcare.model.Assignment;
 import com.carcare.service.DispatchService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

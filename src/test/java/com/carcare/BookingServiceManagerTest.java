@@ -1,13 +1,10 @@
 package com.carcare;
 
-import com.carcare.model.Booking;
 import com.carcare.service.BookingServiceManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
 
 public class BookingServiceManagerTest {
 

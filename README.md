@@ -84,18 +84,17 @@ CarCareBooking/
 2. Giải nén vào thư mục máy chủ (ví dụ: `C:\apache-tomcat-10.1.61` hoặc `%USERPROFILE%\tools\apache-tomcat-10.1.61`).
 3. Đặt biến môi trường `CATALINA_HOME` trỏ tới thư mục giải nén nếu chạy thủ công.
 
-### 3.4. Cấu hình Cơ sở dữ liệu MySQL (Cổng 3306)
-1. Khởi động MySQL/MariaDB (khuyến nghị dùng XAMPP Control Panel bật MySQL tại cổng `3306`).
-2. Nạp cấu trúc và dữ liệu mẫu ban đầu:
-   ```bash
-   mysql -h 127.0.0.1 -P 3306 -u root -p < database/schema.sql
-   mysql -h 127.0.0.1 -P 3306 -u root -p < database/seed.sql
-   ```
-3. Chạy các tệp migration bổ sung trong thư mục `database/migrations/`:
-   ```bash
-   mysql -h 127.0.0.1 -P 3306 -u root -p < database/migrations/001_add_password_reset_tokens.sql
-   mysql -h 127.0.0.1 -P 3306 -u root -p < database/migrations/002_add_admin_employee_profile.sql
-   ```
+### 3.4. Cấu hình cơ sở dữ liệu MySQL (cổng 3307)
+1. Khởi động dịch vụ MySQL80 trong Windows Services (Win + R → services.msc). Trong MySQL Workbench, mở Local instance MySQL80 (localhost:3307) để kiểm tra kết nối. Dự án dùng MySQL Server cài riêng nên có thể chạy khi XAMPP đã tắt.
+2. Nếu máy chưa có database carcare_db, mở Command Prompt (CMD) tại thư mục gốc CarCareBooking và chạy lần lượt các lệnh sau. Tùy chọn -p sẽ yêu cầu nhập mật khẩu MySQL trên máy bạn.
+   mysql -h 127.0.0.1 -P 3307 -u root -p < database\schema.sql
+   mysql -h 127.0.0.1 -P 3307 -u root -p carcare_db < database\seed.sql
+3. Chạy các migration bổ sung theo thứ tự sau:
+   mysql -h 127.0.0.1 -P 3307 -u root -p carcare_db < database\migrations\001_add_password_reset_tokens.sql
+   mysql -h 127.0.0.1 -P 3307 -u root -p carcare_db < database\migrations\002_add_admin_employee_profile.sql
+   
+   Nếu đã nhập bản sao lưu carcare_db.sql và bản sao lưu đã có đủ dữ liệu cùng các thay đổi từ migration, chuyển thẳng sang bước 4.
+4. Sao chép src/main/resources/db.properties.example thành src/main/resources/db.properties. Trong file vừa tạo, đổi db.url sang jdbc:mysql://localhost:3307/carcare_db, giữ các tham số có sẵn sau dấu ?, rồi điền db.username và db.password của MySQL trên máy mình. Chỉ đưa db.properties.example lên Git và thêm /src/main/resources/db.properties vào .gitignore để giữ mật khẩu trong cấu hình máy cá nhân.
 
 ### 3.5. Cấu hình Kết nối JDBC (`db.properties`)
 1. Sao chép tệp `src/main/resources/db.properties.example` thành `src/main/resources/db.properties`.
